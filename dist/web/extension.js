@@ -256,7 +256,7 @@ class ExtendedPromise extends Promise {
         });
         this.#resolve = _resolve;
         this.#reject = _reject;
-        callback(_resolve, _reject);
+        callback?.(_resolve, _reject);
     }
 
     done(value) {
