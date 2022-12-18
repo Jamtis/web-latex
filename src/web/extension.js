@@ -7,7 +7,7 @@ export function activate(context) {
     const disposable = vscode.commands.registerCommand('latex-js.helloWorld', () => {
         vscode.window.showInformationMessage('Hello World from latex-js in a web extension host!');
 
-        const compiler = new LatexCompiler;
+        //const compiler = new LatexCompiler;
         debugger;
     });
 
