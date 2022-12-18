@@ -1,4 +1,3 @@
-import './texlive.js/promises.js/promise.js';
 import './texlive.js/pdftex.js';
 
 export default class LatexCompiler {
