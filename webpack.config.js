@@ -17,8 +17,7 @@ const webExtensionConfig = {
 	mode: 'none', // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
 	target: 'webworker', // extensions run in a webworker context
 	entry: {
-		'extension': './src/web/extension.ts',
-		'test/suite/index': './src/web/test/suite/index.ts'
+		'extension': './src/web/extension.js'
 	},
 	output: {
 		filename: '[name].js',
@@ -28,7 +27,7 @@ const webExtensionConfig = {
 	},
 	resolve: {
 		mainFields: ['browser', 'module', 'main'], // look for `browser` entry point in imported node modules
-		extensions: ['.ts', '.js'], // support ts-files and js-files
+		extensions: ['.js'], // support ts-files and js-files
 		alias: {
 			// provides alternate implementation for node module and source files
 		},
@@ -41,11 +40,8 @@ const webExtensionConfig = {
 	},
 	module: {
 		rules: [{
-			test: /\.ts$/,
-			exclude: /node_modules/,
-			use: [{
-				loader: 'ts-loader'
-			}]
+			test: /\.js$/,
+			exclude: /node_modules|dist/,
 		}]
 	},
 	plugins: [
