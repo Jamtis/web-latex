@@ -19,7 +19,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class LatexCompiler {
-    pdf_tex = new PDFTeX;
+    pdf_tex = new _texlive_js_pdftex_js__WEBPACK_IMPORTED_MODULE_0__["default"];
     #workspace;
     static #path_name_regex = /^(.+)\/(.+?)$/;
 

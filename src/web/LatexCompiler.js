@@ -1,4 +1,4 @@
-import './texlive.js/pdftex.js';
+import PDFTeX from './texlive.js/pdftex.js';
 
 export default class LatexCompiler {
     pdf_tex = new PDFTeX;
