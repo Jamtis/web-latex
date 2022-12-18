@@ -1,3 +1,4 @@
+import * as vscode from 'vscode';
 import LatexCompiler from './LatexCompiler.js';
 
 export function activate(context) {
