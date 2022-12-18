@@ -1,13 +1,11 @@
+import {workspace} from 'vscode';
 import PDFTeX from './texlive.js/pdftex.js';
 
 export default class LatexCompiler {
     #pdf_tex = new PDFTeX;
-    #workspace;
     static #path_name_regex = /^(.+)\/(.+?)$/;
 
-    constructor(vscode) {
-        this.#workspace = vscode.workspace;
-
+    constructor() {
         const mem_promise = this.#pdf_tex.set_TOTAL_MEMORY(80*1024*1024);
         (async () => {
             const r = await mem_promise;
@@ -17,11 +15,11 @@ export default class LatexCompiler {
     }
 
     async addFiles() {
-        const files_promise = this.#workspace.findFiles('**/*');
+        const files_promise = workspace.findFiles('**/*');
         const files = await files_promise;
         for (const {path} of files) {
             try {
-                const document = await this.#workspace.openTextDocument(path);
+                const document = await workspace.openTextDocument(path);
                 const content = document.getText();
                 const [, parent_path, file_name] = path.match(this.constructor.#path_name_regex);
                 const promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content, true, true);

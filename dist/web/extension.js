@@ -3,29 +3,23 @@
 /******/ 	var __webpack_modules__ = ([
 /* 0 */,
 /* 1 */
-/***/ ((module) => {
-
-module.exports = require("vscode");
-
-/***/ }),
-/* 2 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ LatexCompiler)
 /* harmony export */ });
-/* harmony import */ var _texlive_js_pdftex_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
+/* harmony import */ var vscode__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var vscode__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vscode__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _texlive_js_pdftex_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+
 
 
 class LatexCompiler {
-    #pdf_tex = new _texlive_js_pdftex_js__WEBPACK_IMPORTED_MODULE_0__["default"];
-    #workspace;
+    #pdf_tex = new _texlive_js_pdftex_js__WEBPACK_IMPORTED_MODULE_1__["default"];
     static #path_name_regex = /^(.+)\/(.+?)$/;
 
-    constructor(vscode) {
-        this.#workspace = vscode.workspace;
-
+    constructor() {
         const mem_promise = this.#pdf_tex.set_TOTAL_MEMORY(80*1024*1024);
         (async () => {
             const r = await mem_promise;
@@ -35,11 +29,11 @@ class LatexCompiler {
     }
 
     async addFiles() {
-        const files_promise = this.#workspace.findFiles('**/*');
+        const files_promise = vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.findFiles('**/*');
         const files = await files_promise;
         for (const {path} of files) {
             try {
-                const document = await this.#workspace.openTextDocument(path);
+                const document = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.openTextDocument(path);
                 const content = document.getText();
                 const [, parent_path, file_name] = path.match(this.constructor.#path_name_regex);
                 const promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content, true, true);
@@ -52,6 +46,12 @@ class LatexCompiler {
     }
 };
 
+
+/***/ }),
+/* 2 */
+/***/ ((module) => {
+
+module.exports = require("vscode");
 
 /***/ }),
 /* 3 */
@@ -342,19 +342,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "activate": () => (/* binding */ activate),
 /* harmony export */   "deactivate": () => (/* binding */ deactivate)
 /* harmony export */ });
-/* harmony import */ var vscode__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var vscode__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vscode__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
-
+/* harmony import */ var _LatexCompiler_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 
 
 function activate(context) {
     console.log('Congratulations, your extension "latex-js" is now active in the web extension host!');
 
-    const disposable = vscode__WEBPACK_IMPORTED_MODULE_0__.commands.registerCommand('latex-js.helloWorld', () => {
-        vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage('Hello World from latex-js in a web extension host!');
+    const disposable = vscode.commands.registerCommand('latex-js.helloWorld', () => {
+        vscode.window.showInformationMessage('Hello World from latex-js in a web extension host!');
 
-        const compiler = new _LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"];
+        const compiler = new _LatexCompiler_js__WEBPACK_IMPORTED_MODULE_0__["default"](vscode);
         console.log(compiler);
     });
 
