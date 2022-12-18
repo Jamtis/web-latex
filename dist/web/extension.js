@@ -248,11 +248,15 @@ class ExtendedPromise extends Promise {
     #resolve;
     #reject;
     constructor(callback) {
+        let _resolve;
+        let _reject;
         super((resolve, reject) => {
-            this.#resolve = resolve;
-            this.#reject = reject;
+            _resolve = resolve;
+            _reject = reject;
         });
-        callback(resolve, reject);
+        this.#resolve = _resolve;
+        this.#reject = _reject;
+        callback(_resolve, _reject);
     }
 
     done(value) {
@@ -349,7 +353,7 @@ function activate(context) {
     const disposable = vscode__WEBPACK_IMPORTED_MODULE_0__.commands.registerCommand('latex-js.helloWorld', () => {
         vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage('Hello World from latex-js in a web extension host!');
 
-        const compiler = new _LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"];
+        //const compiler = new LatexCompiler;
         debugger;
     });
 
