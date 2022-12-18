@@ -354,10 +354,8 @@ function activate(context) {
     const disposable = vscode__WEBPACK_IMPORTED_MODULE_0__.commands.registerCommand('latex-js.helloWorld', () => {
         vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage('Hello World from latex-js in a web extension host!');
 
-        //const compiler = new LatexCompiler;
-        console.log(_LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"]);
-        debugger;
-        console.log(_LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"]);
+        const compiler = new _LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"];
+        console.log(compiler);
     });
 
     context.subscriptions.push(disposable);
