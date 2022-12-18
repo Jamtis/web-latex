@@ -66,7 +66,7 @@ __webpack_require__.r(__webpack_exports__);
 
 const PDFTeX = function(opt_workerPath) {
   if (!opt_workerPath) {
-      opt_workerPath = './pdftex-worker.js';
+      opt_workerPath = 'https://jamtis.github.io/web-latex/src/web/texlive.js/pdftex-worker.js';
   }
   var worker = new Worker(opt_workerPath);
   var self = this;
