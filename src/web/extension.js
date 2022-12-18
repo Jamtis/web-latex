@@ -8,6 +8,7 @@ export function activate(context) {
         vscode.window.showInformationMessage('Hello World from latex-js in a web extension host!');
 
         //const compiler = new LatexCompiler;
+        console.log(LatexCompiler);
         debugger;
     });
 

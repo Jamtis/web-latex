@@ -354,6 +354,7 @@ function activate(context) {
         vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage('Hello World from latex-js in a web extension host!');
 
         //const compiler = new LatexCompiler;
+        console.log(_LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"]);
         debugger;
     });
 
