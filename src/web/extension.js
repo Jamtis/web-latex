@@ -10,6 +10,7 @@ export function activate(context) {
         //const compiler = new LatexCompiler;
         console.log(LatexCompiler);
         debugger;
+        console.log(LatexCompiler);
     });
 
     context.subscriptions.push(disposable);

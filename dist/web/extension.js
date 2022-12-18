@@ -356,6 +356,7 @@ function activate(context) {
         //const compiler = new LatexCompiler;
         console.log(_LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"]);
         debugger;
+        console.log(_LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"]);
     });
 
     context.subscriptions.push(disposable);
