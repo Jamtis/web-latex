@@ -28,6 +28,7 @@ export default class LatexCompiler {
             if (!folder_success) {
                 throw new Error(`creating file '${file_uri.path}/' failed`);
             }
+            console.log(`added file '${file_uri.path}'`);
         }
     }
 
