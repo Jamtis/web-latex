@@ -1,6 +1,9 @@
 import {workspace, fs} from 'vscode';
 import PDFTeX from './texlive.js/pdftex.js';
 
+console.log("fs", fs);
+debugger;
+
 export default class LatexCompiler {
     #pdf_tex = new PDFTeX;
     static #path_name_regex = /^(.+)\/(.+?)$/;
