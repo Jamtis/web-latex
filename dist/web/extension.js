@@ -25,6 +25,7 @@ class LatexCompiler {
     #pdf_tex = new _texlive_js_pdftex_js__WEBPACK_IMPORTED_MODULE_1__["default"];
     static #path_name_regex = /^(.+)\/(.+?)$/;
     static memory_size = 80*1024*1024;
+    static #decoder = new TextDecoder;
 
     async addFiles() {
         const files_promise = vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.findFiles('**/*');
@@ -43,7 +44,8 @@ class LatexCompiler {
     }
 
     async compile(main_file = './paper.tex') {
-        const main_source = await this.readTextFile(main_file);
+        const content_buffer = await vscode__WEBPACK_IMPORTED_MODULE_0__.fs.readFile(main_file);
+        const main_source = this.constructor.#decoder.decode(content_buffer);
         await this.setMemorySize(this.memory_size);
         return await this.#pdf_tex.compile(main_source);
     }

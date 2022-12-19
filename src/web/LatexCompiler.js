@@ -5,6 +5,7 @@ export default class LatexCompiler {
     #pdf_tex = new PDFTeX;
     static #path_name_regex = /^(.+)\/(.+?)$/;
     static memory_size = 80*1024*1024;
+    static #decoder = new TextDecoder;
 
     async addFiles() {
         const files_promise = workspace.findFiles('**/*');
@@ -23,7 +24,8 @@ export default class LatexCompiler {
     }
 
     async compile(main_file = './paper.tex') {
-        const main_source = await this.readTextFile(main_file);
+        const content_buffer = await fs.readFile(main_file);
+        const main_source = this.constructor.#decoder.decode(content_buffer);
         await this.setMemorySize(this.memory_size);
         return await this.#pdf_tex.compile(main_source);
     }
