@@ -32,8 +32,7 @@ class LatexCompiler {
         const files = await files_promise;
         for (const {path, _formatted} of files) {
             try {
-                console.log("fs", vscode__WEBPACK_IMPORTED_MODULE_0__.fs);
-                const content_buffer = await vscode__WEBPACK_IMPORTED_MODULE_0__.fs.readFile(_formatted);
+                const content_buffer = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readFile(_formatted);
                 const content_view = new DataView(content_buffer);
                 const [, parent_path, file_name] = path.match(this.constructor.#path_name_regex);
                 const promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
@@ -45,7 +44,7 @@ class LatexCompiler {
     }
 
     async compile(main_file = './paper.tex') {
-        const content_buffer = await vscode__WEBPACK_IMPORTED_MODULE_0__.fs.readFile(main_file);
+        const content_buffer = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readFile(main_file);
         const main_source = this.constructor.#decoder.decode(content_buffer);
         await this.setMemorySize(this.memory_size);
         return await this.#pdf_tex.compile(main_source);
