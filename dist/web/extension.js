@@ -29,9 +29,9 @@ class LatexCompiler {
     async addFiles() {
         const files_promise = vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.findFiles('**/*');
         const files = await files_promise;
-        for (const {path} of files) {
+        for (const {path, _formatted} of files) {
             try {
-                const content = await this.readTextFile(path);
+                const content = await this.readTextFile(_formatted);
                 const [, parent_path, file_name] = path.match(this.constructor.#path_name_regex);
                 const promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content, true, true);
                 console.log(await promise);
