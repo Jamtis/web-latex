@@ -46,7 +46,7 @@ export default class LatexCompiler {
 function toDataURI(string) {
     try {
         // don't know why this works
-        return `data:text/plain;charset=utf-8;base64,` + btoa(unespace(encodeURIComponent(string)));
+        return `data:text/plain;charset=utf-8;base64,` + btoa(unescape(encodeURIComponent(string)));
     } catch (error) {
         console.warn(error);
     }
