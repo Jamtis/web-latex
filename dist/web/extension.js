@@ -32,8 +32,8 @@ class LatexCompiler {
         const files = await files_promise;
         for (const file_uri of files) {
             try {
-                const content_buffer = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readFile(file_uri);
-                const content_view = new DataView(content_buffer);
+                const content_array = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readFile(file_uri);
+                const content_view = new DataView(content_array.buffer);
                 const [, parent_path, file_name] = file_uri.path.match(this.constructor.#path_name_regex);
                 const promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
                 console.log(await promise);
