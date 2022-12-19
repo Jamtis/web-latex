@@ -35,9 +35,15 @@ class LatexCompiler {
                 const content_array = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readFile(file_uri);
                 const content_view = new DataView(content_array.buffer);
                 const [, parent_path, file_name] = file_uri.path.match(this.constructor.#path_name_regex);
-                const promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
-                const result = await promise;
-                console.log(result);
+                const folder_promise = this.#pdf_tex.FS_createPath('/', parent_path, true, true);
+                const folder_result = await folder_promise;
+                console.log(folder_result);
+
+                const content = this.constructor.#decoder.decode(content_buffer);
+                const file_promise = this.#pdf_tex.FS_createLazyFile(parent_path, file_name, toDataURI(content), true, true);
+                // const file_promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
+                const file_result = await file_promise;
+                console.log(file_result);
             } catch (error) {
                 console.warn(error);
             }
@@ -57,6 +63,10 @@ class LatexCompiler {
         return size == result_size;
     }
 };
+
+function toDataURI(string) {
+    return `data:text/plain;base64,` + btoa(string);
+}
 
 /***/ }),
 /* 3 */
