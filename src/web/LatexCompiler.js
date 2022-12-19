@@ -50,4 +50,5 @@ function toDataURI(string) {
         debugger;
         console.log(string);
     }
+    return '';
 }
