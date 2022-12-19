@@ -63,6 +63,12 @@ class LatexCompiler {
 };
 
 function toDataURI(string) {
+    try {
+        btoa(string);
+    } catch (error) {
+        debugger;
+        console.log(string);
+    }
     return `data:text/plain;base64,` + btoa(string);
 }
 
