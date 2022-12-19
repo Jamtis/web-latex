@@ -369,7 +369,7 @@ function activate(context) {
 
         const compiler = new _LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"](vscode__WEBPACK_IMPORTED_MODULE_0__);
         await compiler.addFiles();
-        const result = await compiler.compile();
+        const result = await compiler._compile('paper.tex');
         console.log(result);
     });
 
