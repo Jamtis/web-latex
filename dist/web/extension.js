@@ -31,9 +31,10 @@ class LatexCompiler {
         const files = await files_promise;
         for (const {path, _formatted} of files) {
             try {
-                const content = await this.readTextFile(_formatted);
+                const content_buffer = await vscode__WEBPACK_IMPORTED_MODULE_0__.fs.readFile(_formatted);
+                const content_view = new DataView(content_buffer);
                 const [, parent_path, file_name] = path.match(this.constructor.#path_name_regex);
-                const promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content, true, true);
+                const promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
                 console.log(await promise);
             } catch (error) {
                 console.warn(error);
@@ -45,11 +46,6 @@ class LatexCompiler {
         const main_source = await this.readTextFile(main_file);
         await this.setMemorySize(this.memory_size);
         return await this.#pdf_tex.compile(main_source);
-    }
-
-    async readTextFile(path) {
-        const document = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.openTextDocument(path);
-        return document.getText();
     }
 
     async setMemorySize(size) {
