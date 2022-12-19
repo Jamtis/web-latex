@@ -16,7 +16,8 @@ export default class LatexCompiler {
                 const content_view = new DataView(content_array.buffer);
                 const [, parent_path, file_name] = file_uri.path.match(this.constructor.#path_name_regex);
                 const promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
-                console.log(await promise);
+                const result = await promise;
+                console.log(result);
             } catch (error) {
                 console.warn(error);
             }
