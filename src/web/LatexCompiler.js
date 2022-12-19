@@ -11,21 +11,21 @@ export default class LatexCompiler {
         const files_promise = workspace.findFiles('**/*');
         const files = await files_promise;
         for (const file_uri of files) {
-            try {
-                const content_array = await workspace.fs.readFile(file_uri);
-                const content_view = new DataView(content_array.buffer);
-                const [, parent_path, file_name] = file_uri.path.match(this.constructor.#path_name_regex);
-                const folder_promise = this.#pdf_tex.FS_createPath('/', parent_path, true, true);
-                const folder_result = await folder_promise;
-                console.log(folder_result);
+            const content_array = await workspace.fs.readFile(file_uri);
+            const content_view = new DataView(content_array.buffer);
+            const [, parent_path, file_name] = file_uri.path.match(this.constructor.#path_name_regex);
+            const folder_promise = this.#pdf_tex.FS_createPath('/', parent_path, true, true);
+            const folder_success = await folder_promise;
+            if (!folder_success) {
+                throw new Error(`creating folder '${parent}' failed`);
+            }
 
-                const content = this.constructor.#decoder.decode(content_buffer);
-                const file_promise = this.#pdf_tex.FS_createLazyFile(parent_path, file_name, toDataURI(content), true, true);
-                // const file_promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
-                const file_result = await file_promise;
-                console.log(file_result);
-            } catch (error) {
-                console.warn(error);
+            const content = this.constructor.#decoder.decode(content_array.buffer);
+            const file_promise = this.#pdf_tex.FS_createLazyFile(parent_path, file_name, toDataURI(content), true, true);
+            // const file_promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
+            const file_result = await file_promise;
+            if (!folder_success) {
+                throw new Error(`creating file '${file_uri.path}/' failed`);
             }
         }
     }
