@@ -40,8 +40,8 @@ class LatexCompiler {
                 throw new Error(`creating folder '${parent}' failed`);
             }
 
-            const content = (new TextDecoder).decode(content_array.buffer);
-            // const content = this.constructor.#decoder.decode(content_array.buffer);
+            // const content = (new TextDecoder).decode(content_array.buffer);
+            const content = this.constructor.#decoder.decode(content_array.buffer).substr(9); // remove first 9 bits: BUG?????????????????????
             const file_promise = this.#pdf_tex.FS_createLazyFile(parent_path, file_name, toDataURI(content), true, true);
             // const file_promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
             const file_result = await file_promise;
