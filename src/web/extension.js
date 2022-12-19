@@ -9,7 +9,8 @@ export function activate(context) {
 
         const compiler = new LatexCompiler(vscode);
         await compiler.addFiles();
-        console.log(compiler);
+        const result = await compiler.compile();
+        console.log(result);
     });
 
     context.subscriptions.push(disposable);

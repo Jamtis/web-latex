@@ -360,7 +360,8 @@ function activate(context) {
 
         const compiler = new _LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"](vscode__WEBPACK_IMPORTED_MODULE_0__);
         await compiler.addFiles();
-        console.log(compiler);
+        const result = await compiler.compile();
+        console.log(result);
     });
 
     context.subscriptions.push(disposable);
