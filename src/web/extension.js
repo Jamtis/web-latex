@@ -9,7 +9,7 @@ export function activate(context) {
 
         const compiler = new LatexCompiler(vscode);
         await compiler.addFiles();
-        const result = await compiler._compile('paper.tex');
+        const result = await compiler.compile('paper.tex');
         console.log(result);
     });
 

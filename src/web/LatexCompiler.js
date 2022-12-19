@@ -30,11 +30,9 @@ export default class LatexCompiler {
         }
     }
 
-    async compile(main_file = './paper.tex') {
-        const content_buffer = await workspace.fs.readFile(main_file);
-        const main_source = this.constructor.#decoder.decode(content_buffer);
+    async compile(main_file) {
         await this.setMemorySize(this.memory_size);
-        return await this.#pdf_tex.compile(main_source);
+        return await this.#pdf_tex._compile(main_file);
     }
 
     async setMemorySize(size) {

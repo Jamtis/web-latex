@@ -50,11 +50,9 @@ class LatexCompiler {
         }
     }
 
-    async compile(main_file = './paper.tex') {
-        const content_buffer = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readFile(main_file);
-        const main_source = this.constructor.#decoder.decode(content_buffer);
+    async compile(main_file) {
         await this.setMemorySize(this.memory_size);
-        return await this.#pdf_tex.compile(main_source);
+        return await this.#pdf_tex._compile(main_file);
     }
 
     async setMemorySize(size) {
@@ -380,7 +378,7 @@ function activate(context) {
 
         const compiler = new _LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"](vscode__WEBPACK_IMPORTED_MODULE_0__);
         await compiler.addFiles();
-        const result = await compiler._compile('paper.tex');
+        const result = await compiler.compile('paper.tex');
         console.log(result);
     });
 
