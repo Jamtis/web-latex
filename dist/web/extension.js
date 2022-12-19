@@ -30,11 +30,11 @@ class LatexCompiler {
     async addFiles() {
         const files_promise = vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.findFiles('**/*');
         const files = await files_promise;
-        for (const {path, _formatted} of files) {
+        for (const file_uri of files) {
             try {
-                const content_buffer = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readFile(path);
+                const content_buffer = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readFile(file_uri);
                 const content_view = new DataView(content_buffer);
-                const [, parent_path, file_name] = path.match(this.constructor.#path_name_regex);
+                const [, parent_path, file_name] = file_uri.path.match(this.constructor.#path_name_regex);
                 const promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
                 console.log(await promise);
             } catch (error) {
@@ -225,7 +225,7 @@ const PDFTeX = function(opt_workerPath) {
           return sendCommand({
               'command': 'run',
               'arguments': ['-interaction=nonstopmode', '-output-format', 'pdf', 'input.tex'],
-              //        'arguments': ['-debug-format', '-output-format', 'pdf', '&latex', 'input.tex'],
+                    //  'arguments': ['-debug-format', '-output-format', 'pdf', '&latex', 'input.tex'],
           });
       };
 
@@ -238,6 +238,15 @@ const PDFTeX = function(opt_workerPath) {
           .then(sendCompile)
           .then(getPDF);
   };
+
+  self._compile = async function(main_file) {
+    await sendCommand({
+        'command': 'run',
+        'arguments': ['-interaction=nonstopmode', '-output-format', 'pdf', main_file],
+    });
+    const output_file = main_file.match(/^(.*?)(?:\.tex)?$/) + '.pdf';
+    return await self.FS_readFile(output_file);
+  }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (PDFTeX);
 

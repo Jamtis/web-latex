@@ -10,11 +10,11 @@ export default class LatexCompiler {
     async addFiles() {
         const files_promise = workspace.findFiles('**/*');
         const files = await files_promise;
-        for (const {path, _formatted} of files) {
+        for (const file_uri of files) {
             try {
-                const content_buffer = await workspace.fs.readFile(path);
+                const content_buffer = await workspace.fs.readFile(file_uri);
                 const content_view = new DataView(content_buffer);
-                const [, parent_path, file_name] = path.match(this.constructor.#path_name_regex);
+                const [, parent_path, file_name] = file_uri.path.match(this.constructor.#path_name_regex);
                 const promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
                 console.log(await promise);
             } catch (error) {
