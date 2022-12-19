@@ -12,7 +12,7 @@ export default class LatexCompiler {
         const files = await files_promise;
         for (const {path, _formatted} of files) {
             try {
-                const content_buffer = await workspace.fs.readFile(_formatted);
+                const content_buffer = await workspace.fs.readFile(path);
                 const content_view = new DataView(content_buffer);
                 const [, parent_path, file_name] = path.match(this.constructor.#path_name_regex);
                 const promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
