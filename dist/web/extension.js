@@ -32,6 +32,7 @@ class LatexCompiler {
         const files = await files_promise;
         for (const {path, _formatted} of files) {
             try {
+                console.log("fs", vscode__WEBPACK_IMPORTED_MODULE_0__.fs);
                 const content_buffer = await vscode__WEBPACK_IMPORTED_MODULE_0__.fs.readFile(_formatted);
                 const content_view = new DataView(content_buffer);
                 const [, parent_path, file_name] = path.match(this.constructor.#path_name_regex);
@@ -70,7 +71,7 @@ __webpack_require__.r(__webpack_exports__);
 
 const PDFTeX = function(opt_workerPath) {
   if (!opt_workerPath) {
-      opt_workerPath = 'https://jamtis.github.io/web-latex/src/web/texlive.js/pdftex-worker.js';
+      opt_workerPath = 'pdftex-worker.js';
   }
   var worker = new Worker(opt_workerPath);
   var self = this;

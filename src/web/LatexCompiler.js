@@ -12,6 +12,7 @@ export default class LatexCompiler {
         const files = await files_promise;
         for (const {path, _formatted} of files) {
             try {
+                console.log("fs", fs);
                 const content_buffer = await fs.readFile(_formatted);
                 const content_view = new DataView(content_buffer);
                 const [, parent_path, file_name] = path.match(this.constructor.#path_name_regex);
