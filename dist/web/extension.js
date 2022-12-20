@@ -32,7 +32,7 @@ class LatexCompiler {
     static #decoder = new TextDecoder;
 
     constructor() {
-        this.#pdf_tex.on_stdout = 
+        this.#pdf_tex.on_stdout =
         this.#pdf_tex.on_stderr = message => console.log(message);
     }
 
@@ -49,7 +49,6 @@ class LatexCompiler {
                 throw new Error(`creating folder '${parent}' failed`);
             }
 
-            // const content = (new TextDecoder).decode(content_array.buffer);
             const content = this.constructor.#decoder.decode(content_array.buffer).substr(9); // remove first 9 bits: BUG?????????????????????
             const file_promise = this.#pdf_tex.FS_createLazyFile(parent_path, file_name, toDataURI(content), true, true);
             // const file_promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
@@ -271,7 +270,9 @@ const PDFTeX = function(opt_workerPath) {
         'arguments': ['-interaction=nonstopmode', '-output-format', 'pdf', main_file],
     });
     const output_file = main_file.match(/^(.*?)(?:\.tex)?$/)[1] + '.pdf';
-    return await self.FS_readFile(output_file);
+    const binary_pdf = await self.FS_readFile(output_file);
+    const pdf_dataurl = 'data:application/pdf;charset=binary;base64,' + window.btoa(binary_pdf);
+    return pdf_dataurl;
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (PDFTeX);
