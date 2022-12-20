@@ -21,36 +21,49 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-console.log("fs", vscode__WEBPACK_IMPORTED_MODULE_0__.fs);
+console.log("fs", fs);
 debugger;
 
 class LatexCompiler {
-    #pdf_tex = new _texlive_js_pdftex_js__WEBPACK_IMPORTED_MODULE_1__["default"];
+    // #pdf_tex = new PDFTeX('https://jamtis.github.io/web-latex/src/web/texlive.js/pdftex-worker.js');
+    #pdf_tex = new _texlive_js_pdftex_js__WEBPACK_IMPORTED_MODULE_1__["default"]('https://manuels.github.io/texlive.js/pdftex-worker.js');
     static #path_name_regex = /^(.+)\/(.+?)$/;
     static memory_size = 80*1024*1024;
     static #decoder = new TextDecoder;
 
+    constructor() {
+        this.#pdf_tex.on_stdout = 
+        this.#pdf_tex.on_stderr = message => console.log(message);
+    }
+
     async addFiles() {
         const files_promise = vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.findFiles('**/*');
         const files = await files_promise;
-        for (const {path, _formatted} of files) {
-            try {
-                const content_buffer = await vscode__WEBPACK_IMPORTED_MODULE_0__.fs.readFile(_formatted);
-                const content_view = new DataView(content_buffer);
-                const [, parent_path, file_name] = path.match(this.constructor.#path_name_regex);
-                const promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
-                console.log(await promise);
-            } catch (error) {
-                console.warn(error);
+        for (const file_uri of files) {
+            const content_array = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readFile(file_uri);
+            const content_view = new DataView(content_array.buffer);
+            const [, parent_path, file_name] = file_uri.path.match(this.constructor.#path_name_regex);
+            const folder_promise = this.#pdf_tex.FS_createPath('/', parent_path, true, true);
+            const folder_success = await folder_promise;
+            if (!folder_success) {
+                throw new Error(`creating folder '${parent}' failed`);
             }
+
+            // const content = (new TextDecoder).decode(content_array.buffer);
+            const content = this.constructor.#decoder.decode(content_array.buffer).substr(9); // remove first 9 bits: BUG?????????????????????
+            const file_promise = this.#pdf_tex.FS_createLazyFile(parent_path, file_name, toDataURI(content), true, true);
+            // const file_promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
+            const file_result = await file_promise;
+            if (!folder_success) {
+                throw new Error(`creating file '${file_uri.path}/' failed`);
+            }
+            console.log(`added file '${file_uri.path}'`);
         }
     }
 
-    async compile(main_file = './paper.tex') {
-        const content_buffer = await vscode__WEBPACK_IMPORTED_MODULE_0__.fs.readFile(main_file);
-        const main_source = this.constructor.#decoder.decode(content_buffer);
+    async compile(main_file) {
         await this.setMemorySize(this.memory_size);
-        return await this.#pdf_tex.compile(main_source);
+        return await this.#pdf_tex._compile(main_file);
     }
 
     async setMemorySize(size) {
@@ -59,6 +72,16 @@ class LatexCompiler {
         return size == result_size;
     }
 };
+
+function toDataURI(string) {
+    try {
+        // don't know why this works
+        return `data:text/plain;charset=utf-8;base64,` + btoa(unescape(encodeURIComponent(string)));
+    } catch (error) {
+        console.warn(error);
+    }
+    return '';
+}
 
 /***/ }),
 /* 3 */
@@ -73,7 +96,7 @@ __webpack_require__.r(__webpack_exports__);
 
 const PDFTeX = function(opt_workerPath) {
   if (!opt_workerPath) {
-      opt_workerPath = 'https://jamtis.github.io/web-latex/src/web/texlive.js/pdftex-worker.js';
+      opt_workerPath = 'pdftex-worker.js';
   }
   var worker = new Worker(opt_workerPath);
   var self = this;
@@ -228,7 +251,7 @@ const PDFTeX = function(opt_workerPath) {
           return sendCommand({
               'command': 'run',
               'arguments': ['-interaction=nonstopmode', '-output-format', 'pdf', 'input.tex'],
-              //        'arguments': ['-debug-format', '-output-format', 'pdf', '&latex', 'input.tex'],
+                    //  'arguments': ['-debug-format', '-output-format', 'pdf', '&latex', 'input.tex'],
           });
       };
 
@@ -241,6 +264,15 @@ const PDFTeX = function(opt_workerPath) {
           .then(sendCompile)
           .then(getPDF);
   };
+
+  self._compile = async function(main_file) {
+    await sendCommand({
+        'command': 'run',
+        'arguments': ['-interaction=nonstopmode', '-output-format', 'pdf', main_file],
+    });
+    const output_file = main_file.match(/^(.*?)(?:\.tex)?$/)[1] + '.pdf';
+    return await self.FS_readFile(output_file);
+  }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (PDFTeX);
 
@@ -356,15 +388,21 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function activate(context) {
-    console.log('Congratulations, your extension "latex-js" is now active in the web extension host!');
+    console.log('activating web-latex');
 
     const disposable = vscode__WEBPACK_IMPORTED_MODULE_0__.commands.registerCommand('latex-js.helloWorld', async () => {
-        vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage('Hello World from latex-js in a web extension host!');
+        try {
+            vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage('web-latex startup!');
 
-        const compiler = new _LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"](vscode__WEBPACK_IMPORTED_MODULE_0__);
-        await compiler.addFiles();
-        const result = await compiler.compile();
-        console.log(result);
+            const file_name = await vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInputBox();
+
+            const compiler = new _LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"](vscode__WEBPACK_IMPORTED_MODULE_0__);
+            await compiler.addFiles();
+            const result = await compiler.compile(file_name);
+            console.log(result);
+        } catch (error) {
+            console.error(error);
+        }
     });
 
     context.subscriptions.push(disposable);

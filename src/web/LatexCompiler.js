@@ -1,36 +1,49 @@
-import {workspace, fs} from 'vscode';
+import {workspace} from 'vscode';
 import PDFTeX from './texlive.js/pdftex.js';
 
 console.log("fs", fs);
 debugger;
 
 export default class LatexCompiler {
-    #pdf_tex = new PDFTeX;
+    // #pdf_tex = new PDFTeX('https://jamtis.github.io/web-latex/src/web/texlive.js/pdftex-worker.js');
+    #pdf_tex = new PDFTeX('https://manuels.github.io/texlive.js/pdftex-worker.js');
     static #path_name_regex = /^(.+)\/(.+?)$/;
     static memory_size = 80*1024*1024;
     static #decoder = new TextDecoder;
 
+    constructor() {
+        this.#pdf_tex.on_stdout = 
+        this.#pdf_tex.on_stderr = message => console.log(message);
+    }
+
     async addFiles() {
         const files_promise = workspace.findFiles('**/*');
         const files = await files_promise;
-        for (const {path, _formatted} of files) {
-            try {
-                const content_buffer = await fs.readFile(_formatted);
-                const content_view = new DataView(content_buffer);
-                const [, parent_path, file_name] = path.match(this.constructor.#path_name_regex);
-                const promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
-                console.log(await promise);
-            } catch (error) {
-                console.warn(error);
+        for (const file_uri of files) {
+            const content_array = await workspace.fs.readFile(file_uri);
+            const content_view = new DataView(content_array.buffer);
+            const [, parent_path, file_name] = file_uri.path.match(this.constructor.#path_name_regex);
+            const folder_promise = this.#pdf_tex.FS_createPath('/', parent_path, true, true);
+            const folder_success = await folder_promise;
+            if (!folder_success) {
+                throw new Error(`creating folder '${parent}' failed`);
             }
+
+            // const content = (new TextDecoder).decode(content_array.buffer);
+            const content = this.constructor.#decoder.decode(content_array.buffer).substr(9); // remove first 9 bits: BUG?????????????????????
+            const file_promise = this.#pdf_tex.FS_createLazyFile(parent_path, file_name, toDataURI(content), true, true);
+            // const file_promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
+            const file_result = await file_promise;
+            if (!folder_success) {
+                throw new Error(`creating file '${file_uri.path}/' failed`);
+            }
+            console.log(`added file '${file_uri.path}'`);
         }
     }
 
-    async compile(main_file = './paper.tex') {
-        const content_buffer = await fs.readFile(main_file);
-        const main_source = this.constructor.#decoder.decode(content_buffer);
+    async compile(main_file) {
         await this.setMemorySize(this.memory_size);
-        return await this.#pdf_tex.compile(main_source);
+        return await this.#pdf_tex._compile(main_file);
     }
 
     async setMemorySize(size) {
@@ -39,3 +52,13 @@ export default class LatexCompiler {
         return size == result_size;
     }
 };
+
+function toDataURI(string) {
+    try {
+        // don't know why this works
+        return `data:text/plain;charset=utf-8;base64,` + btoa(unescape(encodeURIComponent(string)));
+    } catch (error) {
+        console.warn(error);
+    }
+    return '';
+}
