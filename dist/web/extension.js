@@ -27,6 +27,11 @@ class LatexCompiler {
     static memory_size = 80*1024*1024;
     static #decoder = new TextDecoder;
 
+    constructor() {
+        this.#pdf_tex.on_stdout = 
+        this.#pdf_tex.on_stderr = message => console.log(message);
+    }
+
     async addFiles() {
         const files_promise = vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.findFiles('**/*');
         const files = await files_promise;
