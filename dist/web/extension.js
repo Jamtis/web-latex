@@ -21,9 +21,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-console.log("fs", fs);
-debugger;
-
 class LatexCompiler {
     // #pdf_tex = new PDFTeX('https://jamtis.github.io/web-latex/src/web/texlive.js/pdftex-worker.js');
     #pdf_tex = new _texlive_js_pdftex_js__WEBPACK_IMPORTED_MODULE_1__["default"]('https://manuels.github.io/texlive.js/pdftex-worker.js');

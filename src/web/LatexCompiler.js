@@ -1,9 +1,6 @@
 import {workspace} from 'vscode';
 import PDFTeX from './texlive.js/pdftex.js';
 
-console.log("fs", fs);
-debugger;
-
 export default class LatexCompiler {
     // #pdf_tex = new PDFTeX('https://jamtis.github.io/web-latex/src/web/texlive.js/pdftex-worker.js');
     #pdf_tex = new PDFTeX('https://manuels.github.io/texlive.js/pdftex-worker.js');
