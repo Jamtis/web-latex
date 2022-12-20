@@ -383,11 +383,13 @@ function activate(context) {
 
     const disposable = vscode__WEBPACK_IMPORTED_MODULE_0__.commands.registerCommand('latex-js.helloWorld', async () => {
         try {
-            vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage('Hello World from latex-js in a web extension host!');
+            vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage('web-latex startup!');
+
+            const file_name = await vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInputBox();
 
             const compiler = new _LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"](vscode__WEBPACK_IMPORTED_MODULE_0__);
             await compiler.addFiles();
-            const result = await compiler.compile('./paper.tex');
+            const result = await compiler.compile(file_name);
             console.log(result);
         } catch (error) {
             console.error(error);
