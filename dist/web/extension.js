@@ -384,7 +384,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function activate(context) {
-    console.log('Congratulations, your extension "latex-js" is now active in the web extension host!');
+    console.log('activating web-latex');
 
     const disposable = vscode__WEBPACK_IMPORTED_MODULE_0__.commands.registerCommand('latex-js.helloWorld', async () => {
         try {

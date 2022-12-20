@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import LatexCompiler from './LatexCompiler.js';
 
 export function activate(context) {
-    console.log('Congratulations, your extension "latex-js" is now active in the web extension host!');
+    console.log('activating web-latex');
 
     const disposable = vscode.commands.registerCommand('latex-js.helloWorld', async () => {
         try {
