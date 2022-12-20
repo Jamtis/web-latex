@@ -382,12 +382,16 @@ function activate(context) {
     console.log('Congratulations, your extension "latex-js" is now active in the web extension host!');
 
     const disposable = vscode__WEBPACK_IMPORTED_MODULE_0__.commands.registerCommand('latex-js.helloWorld', async () => {
-        vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage('Hello World from latex-js in a web extension host!');
+        try {
+            vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage('Hello World from latex-js in a web extension host!');
 
-        const compiler = new _LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"](vscode__WEBPACK_IMPORTED_MODULE_0__);
-        await compiler.addFiles();
-        const result = await compiler.compile('paper.tex');
-        console.log(result);
+            const compiler = new _LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"](vscode__WEBPACK_IMPORTED_MODULE_0__);
+            await compiler.addFiles();
+            const result = await compiler.compile('paper.tex');
+            console.log(result);
+        } catch (error) {
+            console.error(error);
+        }
     });
 
     context.subscriptions.push(disposable);
