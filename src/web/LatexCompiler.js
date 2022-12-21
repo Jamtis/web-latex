@@ -24,7 +24,11 @@ export default class LatexCompiler {
         for (const file_uri of files) {
             const content_array = await workspace.fs.readFile(file_uri);
             const content = this.constructor.#decoder.decode(content_array.buffer).substr(9);
-            await this.addLazyFile(file_uri.path, toDataURI(content));
+            try {
+                await this.addLazyFile(file_uri.path, toDataURI(content));
+            } catch (error) {
+                console.warn(error);
+            }
         }
     }
 
@@ -34,7 +38,11 @@ export default class LatexCompiler {
         for (const file of list) {
             const file_uri = `./texlive${file}`;
             const absolute_uri = url_base + file_uri;
-            await this.addLazyFile(file_uri, absolute_uri);
+            try {
+                await this.addLazyFile(file_uri, absolute_uri);
+            } catch (error) {
+                console.warn(error);
+            }
         }
     }
 
