@@ -357,9 +357,12 @@ function activate(context) {
     const find_command = vscode__WEBPACK_IMPORTED_MODULE_0__.commands.registerCommand('latex-js.listfiles', async () => {
         try {
             vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage('web-latex listFiles!');
-            const files_promise = workspace.findFiles('**/*');
+            const files_promise = vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.findFiles('**/*');
             const files = await files_promise;
             console.log(files);
+            const files_promise2 = vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.findFiles('*');
+            const files2 = await files_promise2;
+            console.log(files2);
         } catch (error) {
             console.error(error);
         }
