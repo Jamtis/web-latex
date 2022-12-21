@@ -59,6 +59,10 @@ class LatexCompiler {
 
     async compileToDataURI(main_file) {
         await this.setMemorySize(this.memory_size);
+        const texlive_files_success = await self.FS_createLazyFilesFromList('/', 'texlive.lst', './texlive', true, true);
+        if (!texlive_files_success) {
+            throw new Error(`adding texlive files failed`);
+        }
         const binary_pdf = await this.#pdf_tex.compileToBinary(main_file);
         return this.#pdf_tex.binaryToDataURI(binary_pdf);
     }
