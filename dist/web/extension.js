@@ -354,7 +354,7 @@ function activate(context) {
     });
     context.subscriptions.push(compile_command);
 
-    const find_command = vscode__WEBPACK_IMPORTED_MODULE_0__.commands.registerCommand('latex-js.listFiles', async () => {
+    const find_command = vscode__WEBPACK_IMPORTED_MODULE_0__.commands.registerCommand('latex-js.listfiles', async () => {
         try {
             vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage('web-latex listFiles!');
             // const files_promise = workspace.findFiles('**/*');

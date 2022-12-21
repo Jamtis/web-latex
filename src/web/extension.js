@@ -20,7 +20,7 @@ export function activate(context) {
     });
     context.subscriptions.push(compile_command);
 
-    const find_command = vscode.commands.registerCommand('latex-js.listFiles', async () => {
+    const find_command = vscode.commands.registerCommand('latex-js.listfiles', async () => {
         try {
             vscode.window.showInformationMessage('web-latex listFiles!');
             // const files_promise = workspace.findFiles('**/*');

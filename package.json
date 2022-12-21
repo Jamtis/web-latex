@@ -11,7 +11,7 @@
   ],
   "activationEvents": [
     "onCommand:latex-js.compile",
-    "onCommand:latex-js.listFiles"
+    "onCommand:latex-js.listfiles"
   ],
   "browser": "./dist/web/extension.js",
   "contributes": {
@@ -21,7 +21,7 @@
         "title": "Compile web-latex"
       },
       {
-        "command": "latex-js.listFiles",
+        "command": "latex-js.listfiles",
         "title": "Find files web-latex"
       }
     ]
