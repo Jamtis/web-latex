@@ -14,7 +14,6 @@ export default class LatexCompiler {
         this.#pdf_tex.on_stdout =
         this.#pdf_tex.on_stderr = message => {
             console.log(message);
-
         };
     }
 
