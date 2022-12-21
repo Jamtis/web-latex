@@ -47,7 +47,7 @@ class LatexCompiler {
             try {
                 await this.addLazyFile(file.path, toDataURI(content));
             } catch (error) {
-                console.warn(error);
+                console.warn(file_uri, error);
             }
         }
     }
@@ -60,7 +60,7 @@ class LatexCompiler {
             try {
                 await this.addLazyFile(file_uri, absolute_uri);
             } catch (error) {
-                console.warn(error);
+                console.warn(file_uri, error);
             }
         }
     }
@@ -343,7 +343,7 @@ function activate(context) {
 
             const file_name = await vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInputBox();
 
-            const compiler = new _LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"](vscode__WEBPACK_IMPORTED_MODULE_0__);
+            const compiler = new _LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"];
             await compiler.addFiles();
             const data_uri = await compiler.compileToDataURI(file_name);
             console.log(data_uri);

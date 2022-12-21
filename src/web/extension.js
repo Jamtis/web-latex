@@ -10,7 +10,7 @@ export function activate(context) {
 
             const file_name = await vscode.window.showInputBox();
 
-            const compiler = new LatexCompiler(vscode);
+            const compiler = new LatexCompiler;
             await compiler.addFiles();
             const data_uri = await compiler.compileToDataURI(file_name);
             console.log(data_uri);

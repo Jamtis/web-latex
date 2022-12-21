@@ -27,7 +27,7 @@ export default class LatexCompiler {
             try {
                 await this.addLazyFile(file.path, toDataURI(content));
             } catch (error) {
-                console.warn(error);
+                console.warn(file_uri, error);
             }
         }
     }
@@ -40,7 +40,7 @@ export default class LatexCompiler {
             try {
                 await this.addLazyFile(file_uri, absolute_uri);
             } catch (error) {
-                console.warn(error);
+                console.warn(file_uri, error);
             }
         }
     }
