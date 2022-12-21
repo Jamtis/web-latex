@@ -10,7 +10,10 @@ export default class LatexCompiler {
 
     constructor() {
         this.#pdf_tex.on_stdout =
-        this.#pdf_tex.on_stderr = message => console.log(message);
+        this.#pdf_tex.on_stderr = message => {
+            console.log(message);
+
+        };
     }
 
     async addFiles() {
@@ -18,31 +21,24 @@ export default class LatexCompiler {
         const files = await files_promise;
         for (const file_uri of files) {
             const content_array = await workspace.fs.readFile(file_uri);
-            const content_view = new DataView(content_array.buffer);
-            const [, parent_path, file_name] = file_uri.path.match(this.constructor.#path_name_regex);
-            const folder_promise = this.#pdf_tex.FS_createPath('/', parent_path, true, true);
-            const folder_success = await folder_promise;
-            if (!folder_success) {
-                throw new Error(`creating folder '${parent}' failed`);
-            }
+            const content = this.constructor.#decoder.decode(content_array.buffer).substr(9);
+            await this.#pdf_tex.FS_createLazyFile(file_uri, toDataURI(content));
+        }
+    }
 
-            const content = this.constructor.#decoder.decode(content_array.buffer).substr(9); // remove first 9 bits: BUG?????????????????????
-            const file_promise = this.#pdf_tex.FS_createLazyFile(parent_path, file_name, toDataURI(content), true, true);
-            // const file_promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
-            const file_result = await file_promise;
-            if (!folder_success) {
-                throw new Error(`creating file '${file_uri.path}/' failed`);
-            }
-            console.log(`added file '${file_uri.path}'`);
+    async addTexliveFiles() {
+        const request = await fetch('./texlive.lst');
+        const list = (await request.text()).split('\n');
+        for (const file of list) {
+            const file_uri = `./texlive${file}`;
+            const absolute_uri = `https://jamtis.github.io/web-latex/src/web/texlive.js/${file_uri}`;
+            await this.addLazyFile(file_uri, absolute_uri);
         }
     }
 
     async compileToDataURI(main_file) {
         await this.setMemorySize(this.memory_size);
-        const texlive_files_success = await this.#pdf_tex.FS_createLazyFilesFromList('/', 'https://jamtis.github.io/web-latex/src/web/texlive.js/texlive.lst', './texlive', true, true);
-        if (texlive_files_success != 0) {
-            throw new Error(`adding texlive files failed`);
-        }
+        await this.addTexliveFiles();
         const binary_pdf = await this.#pdf_tex.compileToBinary(main_file);
         return this.#pdf_tex.binaryToDataURI(binary_pdf);
     }
@@ -51,6 +47,26 @@ export default class LatexCompiler {
         this.memory_size = size;
         const result_size = await this.#pdf_tex.set_TOTAL_MEMORY(size);
         return size == result_size;
+    }
+
+    async addLazyFile(file_uri, content_uri) {
+        const [, parent_path, file_name] = file_uri.path.match(this.constructor.#path_name_regex);
+        const folder_promise = this.#pdf_tex.FS_createPath('/', parent_path, true, true);
+        const folder_success = await folder_promise;
+        if (!folder_success) {
+            throw new Error(`creating folder '${parent}' failed`);
+        }
+
+        // remove first 9 bits: BUG?????????????????????
+        const content = this.constructor.#decoder.decode(content_array.buffer).substr(9);
+        const file_promise = this.#pdf_tex.FS_createLazyFile(parent_path, file_name, content_uri, true, true);
+        // const file_promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
+        const file_result = await file_promise;
+        if (!folder_success) {
+            warn(`creating file '${file_uri.path}/' failed`);
+        } else {
+            console.log(`added file '${file_uri.path}'`);
+        }
     }
 };
 
