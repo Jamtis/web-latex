@@ -58,7 +58,6 @@ export default class LatexCompiler {
         }
 
         // remove first 9 bits: BUG?????????????????????
-        const content = this.constructor.#decoder.decode(content_array.buffer).substr(9);
         const file_promise = this.#pdf_tex.FS_createLazyFile(parent_path, file_name, content_uri, true, true);
         // const file_promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
         const file_result = await file_promise;
