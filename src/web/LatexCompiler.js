@@ -37,7 +37,7 @@ export default class LatexCompiler {
         }
     }
 
-    async compiletoDataURI(main_file) {
+    async compileToDataURI(main_file) {
         await this.setMemorySize(this.memory_size);
         const binary_pdf = await this.#pdf_tex.compileToBinary(main_file);
         return this.#pdf_tex.binaryToDataURI(binary_pdf);
