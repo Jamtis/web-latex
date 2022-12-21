@@ -21,8 +21,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const url_base = 'https://jamtis.github.io/web-latex/src/web/texlive.js/';
+
 class LatexCompiler {
-    #pdf_tex = new _texlive_js_pdftex_js__WEBPACK_IMPORTED_MODULE_1__["default"]('https://jamtis.github.io/web-latex/src/web/texlive.js/pdftex-worker.js');
+    #pdf_tex = new _texlive_js_pdftex_js__WEBPACK_IMPORTED_MODULE_1__["default"](url_base + 'pdftex-worker.js');
     // #pdf_tex = new PDFTeX('./texlive.js/pdftex-worker.js');
     static #path_name_regex = /^(.+)\/(.+?)$/;
     static memory_size = 80*1024*1024;
@@ -47,11 +49,11 @@ class LatexCompiler {
     }
 
     async addTexliveFiles() {
-        const request = await fetch('https://jamtis.github.io/web-latex/src/web/texlive.js/texlive.lst');
+        const request = await fetch(url_base + 'texlive.lst');
         const list = (await request.text()).split('\n');
         for (const file of list) {
             const file_uri = `./texlive${file}`;
-            const absolute_uri = `https://jamtis.github.io/web-latex/src/web/texlive.js/${file_uri}`;
+            const absolute_uri = url_base + file_uri;
             await this.addLazyFile(file_uri, absolute_uri);
         }
     }

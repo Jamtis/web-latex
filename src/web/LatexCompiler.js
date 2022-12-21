@@ -1,8 +1,10 @@
 import {workspace} from 'vscode';
 import PDFTeX from './texlive.js/pdftex.js';
 
+const url_base = 'https://jamtis.github.io/web-latex/src/web/texlive.js/';
+
 export default class LatexCompiler {
-    #pdf_tex = new PDFTeX('https://jamtis.github.io/web-latex/src/web/texlive.js/pdftex-worker.js');
+    #pdf_tex = new PDFTeX(url_base + 'pdftex-worker.js');
     // #pdf_tex = new PDFTeX('./texlive.js/pdftex-worker.js');
     static #path_name_regex = /^(.+)\/(.+?)$/;
     static memory_size = 80*1024*1024;
@@ -27,11 +29,11 @@ export default class LatexCompiler {
     }
 
     async addTexliveFiles() {
-        const request = await fetch('https://jamtis.github.io/web-latex/src/web/texlive.js/texlive.lst');
+        const request = await fetch(url_base + 'texlive.lst');
         const list = (await request.text()).split('\n');
         for (const file of list) {
             const file_uri = `./texlive${file}`;
-            const absolute_uri = `https://jamtis.github.io/web-latex/src/web/texlive.js/${file_uri}`;
+            const absolute_uri = url_base + file_uri;
             await this.addLazyFile(file_uri, absolute_uri);
         }
     }
