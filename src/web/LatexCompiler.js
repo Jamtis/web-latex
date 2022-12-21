@@ -2,8 +2,8 @@ import {workspace} from 'vscode';
 import PDFTeX from './texlive.js/pdftex.js';
 
 export default class LatexCompiler {
-    // #pdf_tex = new PDFTeX('https://jamtis.github.io/web-latex/src/web/texlive.js/pdftex-worker.js');
-    #pdf_tex = new PDFTeX('./texlive.js/pdftex-worker.js');
+    #pdf_tex = new PDFTeX('https://jamtis.github.io/web-latex/src/web/texlive.js/pdftex-worker.js');
+    // #pdf_tex = new PDFTeX('./texlive.js/pdftex-worker.js');
     static #path_name_regex = /^(.+)\/(.+?)$/;
     static memory_size = 80*1024*1024;
     static #decoder = new TextDecoder;
