@@ -27,7 +27,7 @@ export default class LatexCompiler {
     }
 
     async addTexliveFiles() {
-        const request = await fetch('./texlive.lst');
+        const request = await fetch('https://jamtis.github.io/web-latex/src/web/texlive.js/texlive.lst');
         const list = (await request.text()).split('\n');
         for (const file of list) {
             const file_uri = `./texlive${file}`;
