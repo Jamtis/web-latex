@@ -22,7 +22,7 @@ export default class LatexCompiler {
         for (const file_uri of files) {
             const content_array = await workspace.fs.readFile(file_uri);
             const content = this.constructor.#decoder.decode(content_array.buffer).substr(9);
-            await this.addLazyFile(file_uri, toDataURI(content));
+            await this.addLazyFile(file_uri.path, toDataURI(content));
         }
     }
 
@@ -50,7 +50,7 @@ export default class LatexCompiler {
     }
 
     async addLazyFile(file_uri, content_uri) {
-        const [, parent_path, file_name] = file_uri.path.match(this.constructor.#path_name_regex);
+        const [, parent_path, file_name] = file_uri.match(this.constructor.#path_name_regex);
         const folder_promise = this.#pdf_tex.FS_createPath('/', parent_path, true, true);
         const folder_success = await folder_promise;
         if (!folder_success) {
