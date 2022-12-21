@@ -10,14 +10,19 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:latex-js.helloWorld"
+    "onCommand:latex-js.compile",
+    "onCommand:latex-js.findFiles"
   ],
   "browser": "./dist/web/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "latex-js.helloWorld",
-        "title": "Hello World"
+        "command": "latex-js.compile",
+        "title": "Compile web-latex"
+      },
+      {
+        "command": "latex-js.findFiles",
+        "title": "Find files web-latex"
       }
     ]
   },
