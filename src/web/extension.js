@@ -23,9 +23,9 @@ export function activate(context) {
     const find_command = vscode.commands.registerCommand('latex-js.listFiles', async () => {
         try {
             vscode.window.showInformationMessage('web-latex listFiles!');
-            const files_promise = workspace.findFiles('**/*');
-            const files = await files_promise;
-            console.log(files);
+            // const files_promise = workspace.findFiles('**/*');
+            // const files = await files_promise;
+            // console.log(files);
         } catch (error) {
             console.error(error);
         }
