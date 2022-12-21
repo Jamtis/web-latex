@@ -43,6 +43,7 @@ class LatexCompiler {
         const files = await files_promise;
         for (const file of files) {
             const content_array = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readFile(file);
+            // remove first 9 bits: BUG?????????????????????
             const content = this.constructor.#decoder.decode(content_array.buffer).substr(9);
             try {
                 await this.addLazyFile(file.path, toDataURI(content));
@@ -87,14 +88,17 @@ class LatexCompiler {
             throw new Error(`creating folder '${parent}' failed`);
         }
 
-        // remove first 9 bits: BUG?????????????????????
-        const file_promise = this.#pdf_tex.FS_createLazyFile(parent_path, file_name, content_uri, true, true);
-        // const file_promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
-        const file_result = await file_promise;
-        if (!folder_success) {
-            console.warn(`creating file '${file_uri}' failed`);
+        if (!file_name.match(/^(?:\.|)$/)) {
+            const file_promise = this.#pdf_tex.FS_createLazyFile(parent_path, file_name, content_uri, true, true);
+            // const file_promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
+            const file_result = await file_promise;
+            if (!folder_success) {
+                console.warn(`creating file '${file_uri}' failed`);
+            } else {
+                console.log(`added file '${file_uri}'`);
+            }
         } else {
-            console.log(`added file '${file_uri}'`);
+            console.log("skipping file: " + file_uri);
         }
     }
 };
