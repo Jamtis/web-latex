@@ -42,7 +42,7 @@ class LatexCompiler {
         for (const file_uri of files) {
             const content_array = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readFile(file_uri);
             const content = this.constructor.#decoder.decode(content_array.buffer).substr(9);
-            await this.#pdf_tex.FS_createLazyFile(file_uri, toDataURI(content));
+            await this.addLazyFile(file_uri, toDataURI(content));
         }
     }
 
