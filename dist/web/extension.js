@@ -40,6 +40,7 @@ class LatexCompiler {
     async addFiles() {
         const files_promise = vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.findFiles('**/*');
         const files = await files_promise;
+        console.log("files", files);
         for (const file of files) {
             const content_array = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readFile(file);
             // remove first 9 bits: BUG?????????????????????
