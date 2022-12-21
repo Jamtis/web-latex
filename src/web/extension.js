@@ -12,7 +12,7 @@ export function activate(context) {
 
             const compiler = new LatexCompiler(vscode);
             await compiler.addFiles();
-            const data_uri = await compiler.compiletoDataURI(file_name);
+            const data_uri = await compiler.compileToDataURI(file_name);
             console.log(data_uri);
         } catch (error) {
             console.error(error);

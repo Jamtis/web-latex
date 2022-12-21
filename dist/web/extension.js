@@ -59,7 +59,7 @@ class LatexCompiler {
 
     async compiletoDataURI(main_file) {
         await this.setMemorySize(this.memory_size);
-        const binary_pdf = await this.#pdf_tex.compiletoBinary(main_file);
+        const binary_pdf = await this.#pdf_tex.compileToBinary(main_file);
         return this.#pdf_tex.binaryToDataURI(binary_pdf);
     }
 
@@ -346,7 +346,7 @@ function activate(context) {
 
             const compiler = new _LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"](vscode__WEBPACK_IMPORTED_MODULE_0__);
             await compiler.addFiles();
-            const data_uri = await compiler.compiletoDataURI(file_name);
+            const data_uri = await compiler.compileToDataURI(file_name);
             console.log(data_uri);
         } catch (error) {
             console.error(error);
