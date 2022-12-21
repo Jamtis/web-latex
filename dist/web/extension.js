@@ -116,9 +116,8 @@ const PDFTeX = function (opt_workerPath) {
     if (!opt_workerPath) {
         opt_workerPath = 'pdftex-worker.js';
     }
-    var worker = new Worker(opt_workerPath);
-    var self = this;
-    var initialized = false;
+    const worker = new Worker(opt_workerPath);
+    const self = this;
 
     self.on_stdout = function (msg) {
         console.log(msg);
@@ -130,36 +129,40 @@ const PDFTeX = function (opt_workerPath) {
 
 
     worker.onmessage = function (ev) {
-        var data = JSON.parse(ev.data);
-        var msg_id;
+        const data = JSON.parse(ev.data);
 
         if (!('command' in data))
             console.log("missing command!", data);
-        switch (data['command']) {
+        switch (data.command) {
             case 'ready':
-                onready.done(true);
+                onready.resolve(true);
                 break;
             case 'stdout':
             case 'stderr':
-                self['on_' + data['command']](data['contents']);
+                self['on_' + data.command](data.contents);
                 break;
             default:
                 //console.debug('< received', data);
-                msg_id = data['msg_id'];
+                const msg_id = data['msg_id'];
                 if (('msg_id' in data) && (msg_id in promises)) {
-                    promises[msg_id].done(data['result']);
+                    const promise = promises[msg_id];
+                    if ('error' in data) {
+                        promise.reject(data.error);
+                    } else {
+                        promise.resolve(data.result);
+                    }
                 } else
                     console.warn('Unknown worker message ' + msg_id + '!');
         }
     }
 
-    var onready = new _ExtendedPromise_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
-    var promises = [];
-    var chunkSize = undefined;
+    const onready = new _ExtendedPromise_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
+    const promises = [];
+    const chunkSize = undefined;
 
-    var sendCommand = function (cmd) {
-        var p = new _ExtendedPromise_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
-        var msg_id = promises.push(p) - 1;
+    const sendCommand = function (cmd) {
+        const p = new _ExtendedPromise_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
+        const msg_id = promises.push(p) - 1;
 
         onready.then(function () {
             cmd['msg_id'] = msg_id;
@@ -170,49 +173,10 @@ const PDFTeX = function (opt_workerPath) {
         return p;
     };
 
-    var determineChunkSize = function () {
-        var size = 1024;
-        var max = undefined;
-        var min = undefined;
-        var delta = size;
-        var success = true;
-        var buf;
 
-        while (Math.abs(delta) > 100) {
-            if (success) {
-                min = size;
-                if (typeof (max) === 'undefined')
-                    delta = size;
-                else
-                    delta = (max - size) / 2;
-            } else {
-                max = size;
-                if (typeof (min) === 'undefined')
-                    delta = -1 * size / 2;
-                else
-                    delta = -1 * (size - min) / 2;
-            }
-            size += delta;
-
-            success = true;
-            try {
-                buf = String.fromCharCode.apply(null, new Uint8Array(size));
-                sendCommand({
-                    command: 'test',
-                    data: buf,
-                });
-            } catch (e) {
-                success = false;
-            }
-        }
-
-        return size;
-    };
-
-
-    var createCommand = function (command) {
+    const createCommand = function (command) {
         self[command] = function () {
-            var args = [].concat.apply([], arguments);
+            const args = [].concat.apply([], arguments);
 
             return sendCommand({
                 'command': command,
@@ -268,8 +232,12 @@ class ExtendedPromise extends Promise {
         callback?.(_resolve, _reject);
     }
 
-    done(value) {
+    resolve(value) {
         this.#resolve(value);
+    }
+
+    reject(value) {
+        this.#reject(value);
     }
 };
 
