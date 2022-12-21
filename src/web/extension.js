@@ -4,9 +4,9 @@ import LatexCompiler from './LatexCompiler.js';
 export function activate(context) {
     console.log('activating web-latex');
 
-    const disposable = vscode.commands.registerCommand('latex-js.helloWorld', async () => {
+    const compile_command = vscode.commands.registerCommand('latex-js.compile', async () => {
         try {
-            vscode.window.showInformationMessage('web-latex startup!');
+            vscode.window.showInformationMessage('web-latex compile!');
 
             const file_name = await vscode.window.showInputBox();
 
@@ -18,8 +18,19 @@ export function activate(context) {
             console.error(error);
         }
     });
+    context.subscriptions.push(compile_command);
 
-    context.subscriptions.push(disposable);
+    const find_command = vscode.commands.registerCommand('latex-js.listFiles', async () => {
+        try {
+            vscode.window.showInformationMessage('web-latex findFiles!');
+            const files_promise = workspace.findFiles('**/*');
+            const files = await files_promise;
+            console.log(files);
+        } catch (error) {
+            console.error(error);
+        }
+    });
+    context.subscriptions.push(find_command);
 }
 
 export function deactivate() {}

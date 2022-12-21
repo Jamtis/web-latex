@@ -338,9 +338,9 @@ __webpack_require__.r(__webpack_exports__);
 function activate(context) {
     console.log('activating web-latex');
 
-    const disposable = vscode__WEBPACK_IMPORTED_MODULE_0__.commands.registerCommand('latex-js.helloWorld', async () => {
+    const compile_command = vscode__WEBPACK_IMPORTED_MODULE_0__.commands.registerCommand('latex-js.compile', async () => {
         try {
-            vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage('web-latex startup!');
+            vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage('web-latex compile!');
 
             const file_name = await vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInputBox();
 
@@ -352,8 +352,19 @@ function activate(context) {
             console.error(error);
         }
     });
+    context.subscriptions.push(compile_command);
 
-    context.subscriptions.push(disposable);
+    const find_command = vscode__WEBPACK_IMPORTED_MODULE_0__.commands.registerCommand('latex-js.listFiles', async () => {
+        try {
+            vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage('web-latex findFiles!');
+            const files_promise = workspace.findFiles('**/*');
+            const files = await files_promise;
+            console.log(files);
+        } catch (error) {
+            console.error(error);
+        }
+    });
+    context.subscriptions.push(find_command);
 }
 
 function deactivate() {}
