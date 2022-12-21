@@ -41,11 +41,11 @@ class LatexCompiler {
     async addFiles() {
         const files_promise = vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.findFiles('**/*');
         const files = await files_promise;
-        for (const file_uri of files) {
-            const content_array = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readFile(file_uri);
+        for (const file of files) {
+            const content_array = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readFile(file);
             const content = this.constructor.#decoder.decode(content_array.buffer).substr(9);
             try {
-                await this.addLazyFile(file_uri.path, toDataURI(content));
+                await this.addLazyFile(file.path, toDataURI(content));
             } catch (error) {
                 console.warn(error);
             }
