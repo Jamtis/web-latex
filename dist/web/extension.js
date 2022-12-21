@@ -59,7 +59,7 @@ class LatexCompiler {
 
     async compileToDataURI(main_file) {
         await this.setMemorySize(this.memory_size);
-        const texlive_files_success = await self.FS_createLazyFilesFromList('/', 'texlive.lst', './texlive', true, true);
+        const texlive_files_success = await this.#pdf_tex.FS_createLazyFilesFromList('/', 'texlive.lst', './texlive', true, true);
         if (!texlive_files_success) {
             throw new Error(`adding texlive files failed`);
         }
