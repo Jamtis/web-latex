@@ -3,7 +3,7 @@ import PDFTeX from './texlive.js/pdftex.js';
 
 export default class LatexCompiler {
     // #pdf_tex = new PDFTeX('https://jamtis.github.io/web-latex/src/web/texlive.js/pdftex-worker.js');
-    #pdf_tex = new PDFTeX('https://manuels.github.io/texlive.js/pdftex-worker.js');
+    #pdf_tex = new PDFTeX('./texlive.js/pdftex-worker.js');
     static #path_name_regex = /^(.+)\/(.+?)$/;
     static memory_size = 80*1024*1024;
     static #decoder = new TextDecoder;
@@ -37,9 +37,10 @@ export default class LatexCompiler {
         }
     }
 
-    async compile(main_file) {
+    async compiletoDataURI(main_file) {
         await this.setMemorySize(this.memory_size);
-        return await this.#pdf_tex._compile(main_file);
+        const binary_pdf = await this.#pdf_tex.compiletoBinary(main_file);
+        return this.#pdf_tex.binaryToDataURI(binary_pdf);
     }
 
     async setMemorySize(size) {

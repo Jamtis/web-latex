@@ -12,8 +12,8 @@ export function activate(context) {
 
             const compiler = new LatexCompiler(vscode);
             await compiler.addFiles();
-            const result = await compiler.compile(file_name);
-            console.log(result);
+            const data_uri = await compiler.compiletoDataURI(file_name);
+            console.log(data_uri);
         } catch (error) {
             console.error(error);
         }
@@ -22,4 +22,4 @@ export function activate(context) {
     context.subscriptions.push(disposable);
 }
 
-export function deactivate() { }
+export function deactivate() {}
