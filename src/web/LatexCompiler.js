@@ -62,9 +62,9 @@ export default class LatexCompiler {
         // const file_promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
         const file_result = await file_promise;
         if (!folder_success) {
-            console.warn(`creating file '${file_uri.path}/' failed`);
+            console.warn(`creating file '${file_uri}/' failed`);
         } else {
-            console.log(`added file '${file_uri.path}'`);
+            console.log(`added file '${file_uri}'`);
         }
     }
 };
