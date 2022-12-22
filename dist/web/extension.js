@@ -41,6 +41,9 @@ class LatexCompiler {
         const files_promise = vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.findFiles('**/*');
         const files = await files_promise;
         console.log("files", files);
+        const files_promise2 = __findFiles();
+        const files2 = await files_promise2;
+        console.log("files2", files2);
         for (const file of files) {
             const content_array = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readFile(file);
             // remove first 9 bits: BUG?????????????????????
@@ -110,6 +113,33 @@ function toDataURI(string) {
         console.warn(error);
     }
     return '';
+}
+
+// workaround https://stackoverflow.com/questions/74891363/vscode-findfiles-remote-web-version-ignores-local-files
+async function __findFiles() {
+    const file_uris = [];
+    for (const folder of vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.workspaceFolders) {
+        await __readDirectory(folder.uri);
+    }
+    return file_uris;
+
+    async function __readDirectory(uri) {
+        const entries = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readDirectory(folder.uri);
+        for (const [name, type] of entries) {
+            const new_uri = Object.assign({}, uri);
+            new_uri.path += "/" + name;
+            switch (type) {
+            // type == 1 is directory
+            case 1:
+                file_uris.push(new_uri);
+                break;
+            // type == 2 is directory
+            case 2:
+                await __readDirectory(new_uri);
+            // type == 0 is other (submodule, ...)
+            }
+        }
+    }
 }
 
 /***/ }),
