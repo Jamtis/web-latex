@@ -124,7 +124,7 @@ async function __findFiles() {
     return file_uris;
 
     async function __readDirectory(uri) {
-        const entries = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readDirectory(folder.uri);
+        const entries = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readDirectory(uri);
         for (const [name, type] of entries) {
             const new_uri = Object.assign({}, uri);
             new_uri.path += "/" + name;
