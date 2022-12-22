@@ -104,6 +104,7 @@ async function __findFiles() {
     return file_uris;
 
     async function __readDirectory(uri) {
+        console.log("read", uri.path);
         const entries = await workspace.fs.readDirectory(uri);
         for (const [name, type] of entries) {
             const new_uri = Object.assign({}, uri);
@@ -111,6 +112,7 @@ async function __findFiles() {
             switch (type) {
             // type == 1 is directory
             case 1:
+                console.log("add", new_uri.path, "from", uri.path);
                 file_uris.push(new_uri);
                 break;
             // type == 2 is directory
