@@ -65,7 +65,7 @@ class LatexCompiler {
             const new_uri = 'texlive/' + file_uri;
             const absolute_uri = url_base + new_uri;
             try {
-                await this.addLazyFile(new_uri, absolute_uri);
+                await this.addLazyFile(file_uri, absolute_uri);
             } catch (error) {
                 console.warn(file_uri, error);
             }
