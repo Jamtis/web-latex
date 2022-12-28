@@ -378,7 +378,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function activate(context) {
-    console.log('activating web-latex', context.extensionPath);
+    console.log('activating web-latex', context.extensionUri);
 
     const compile_command = vscode__WEBPACK_IMPORTED_MODULE_0__.commands.registerCommand('latex-js.compile', async () => {
         try {
@@ -406,7 +406,7 @@ function activate(context) {
             const files2 = await files_promise2;
             console.log(files2);
 
-            const path = context.asAbsolutePath('src/web/texlive/');
+            const path = context.asAbsolutePath(vscode__WEBPACK_IMPORTED_MODULE_0__.Uri.joinPath(context.extensionUri, 'src/web/texlive/'));
             const entries = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readDirectory(path);
             console.log('absolutepath', path, entries);
         } catch (error) {
