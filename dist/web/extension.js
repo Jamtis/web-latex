@@ -27,7 +27,7 @@ class LatexCompiler {
     #pdf_tex = new _texlive_js_pdftex_js__WEBPACK_IMPORTED_MODULE_1__["default"](url_base + 'pdftex-worker.js');
     static #path_name_split_regex = /^(.*?)\/?([^\/]+?)$/;
     static #path_suffix_regex = /^\/(?:.*?)\/(?:.*?)(\/.+)$/;
-    static #memory_size = 80*1024*1024;
+    #memory_size = 80*1024*1024;
     static #decoder = new TextDecoder;
 
     constructor() {
@@ -80,7 +80,7 @@ class LatexCompiler {
         return this.#pdf_tex.binaryToDataURI(binary_pdf);
     }
 
-    async setMemorySize(size = this.constructor.#memory_size) {
+    async setMemorySize(size = this.#memory_size) {
         if (isNaN(size) || size < 0 || size == Infinity) {
             throw new Error('invalid size');
         }
