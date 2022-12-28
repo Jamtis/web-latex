@@ -7,7 +7,7 @@ export default class LatexCompiler {
     #pdf_tex = new PDFTeX(url_base + 'pdftex-worker.js');
     // #pdf_tex = new PDFTeX('./texlive.js/pdftex-worker.js');
     static #path_name_split_regex = /^(.*?)\/?([^\/]+?)$/;
-    static #path_suffix_regex = /^(.*?)\/?([^\/]+?)$/;
+    static #path_suffix_regex = /^\/(?:.*?)\/(?:.*?)(\/.+)$/;
     static memory_size = 80*1024*1024;
     static #decoder = new TextDecoder;
 
@@ -27,7 +27,7 @@ export default class LatexCompiler {
         const files = await files_promise;
         // console.log('files', files);
         for (const file of files) {
-            const suffix_path = new URL('../../' + file.path, 'file:').pathname;
+            const [, suffix_path] = file.path.match(this.constructor.#path_suffix_regex);
             const content_array = await workspace.fs.readFile(file);
             // remove first 9 bits: BUG?????????????????????
             const content = this.constructor.#decoder.decode(content_array.buffer).substr(9);
