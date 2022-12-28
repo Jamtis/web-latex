@@ -21,7 +21,7 @@ export default class LatexCompiler {
         const files_promise = workspace.findFiles('**/*');
         const files = await files_promise;
         console.log("files", files);
-        const files_promise2 = __findFiles();
+        const files_promise2 = __findAllFiles();
         const files2 = await files_promise2;
         console.log("files2", files2);
         for (const file of files) {
@@ -96,12 +96,16 @@ function toDataURI(string) {
 }
 
 // workaround https://stackoverflow.com/questions/74891363/vscode-findfiles-remote-web-version-ignores-local-files
-async function __findFiles() {
+async function __findAllFiles() {
     const file_uris = [];
     for (const folder of workspace.workspaceFolders) {
         await __readDirectory(folder.uri);
     }
-    return file_uris;
+    const path_map = new Map;
+    for (const file_uri of file_uris) {
+        path_map.set(file_uri.path, file_uri);
+    }
+    return [...path_map.values()];
 
     async function __readDirectory(uri) {
         const entries = await workspace.fs.readDirectory(uri);
