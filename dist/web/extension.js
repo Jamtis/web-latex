@@ -405,6 +405,9 @@ function activate(context) {
             const files_promise2 = vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.findFiles('*');
             const files2 = await files_promise2;
             console.log(files2);
+
+            const path = context.asAbsolutePath('src/web/texlive/');
+            console.log('absolutepath', path);
         } catch (error) {
             console.error(error);
         }
