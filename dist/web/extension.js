@@ -80,8 +80,7 @@ class LatexCompiler {
         return this.#pdf_tex.binaryToDataURI(binary_pdf);
     }
 
-    async setMemorySize(size) {
-        size = size || this.#memory_size;
+    async setMemorySize(size = this.constructor.#memory_size) {
         if (isNaN(size) || size < 0 || size == Infinity) {
             throw new Error('invalid size');
         }
