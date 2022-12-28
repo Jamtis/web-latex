@@ -390,7 +390,7 @@ function activate(context) {
             const file_name = await vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInputBox() || 'input.tex';
 
             const compiler = new _LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"];
-            await this.setMemorySize();
+            await compiler.setMemorySize();
             await compiler.addFiles();
             const data_uri = await compiler.compileToDataURI(file_name);
             console.log(data_uri);

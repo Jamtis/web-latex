@@ -11,7 +11,7 @@ export function activate(context) {
             const file_name = await vscode.window.showInputBox() || 'input.tex';
 
             const compiler = new LatexCompiler;
-            await this.setMemorySize();
+            await compiler.setMemorySize();
             await compiler.addFiles();
             const data_uri = await compiler.compileToDataURI(file_name);
             console.log(data_uri);
