@@ -5,7 +5,6 @@ const url_base = 'https://foc.ethz.ch/people/nicholasbrandt/web-latex/src/web/te
 
 export default class LatexCompiler {
     #pdf_tex = new PDFTeX(url_base + 'pdftex-worker.js');
-    // #pdf_tex = new PDFTeX('./texlive.js/pdftex-worker.js');
     static #path_name_split_regex = /^(.*?)\/?([^\/]+?)$/;
     static #path_suffix_regex = /^\/(?:.*?)\/(?:.*?)(\/.+)$/;
     static memory_size = 80*1024*1024;
@@ -55,8 +54,8 @@ export default class LatexCompiler {
     async compileToDataURI(main_file) {
         await this.setMemorySize(this.memory_size);
         await this.addTexliveFiles();
-        // const result = await this.#pdf_tex.FS_readdir('/');
-        // console.log('result', result);
+        const result = await this.#pdf_tex.FS_readdir('/');
+        console.log('result', result);
         const binary_pdf = await this.#pdf_tex.compileToBinary(main_file);
         return this.#pdf_tex.binaryToDataURI(binary_pdf);
     }
