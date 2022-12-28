@@ -62,8 +62,7 @@ class LatexCompiler {
         const request = await fetch(url_base + 'texlive.lst');
         const list = (await request.text()).split('\n');
         for (const file_uri of list) {
-            const new_uri = 'texlive/' + file_uri;
-            const absolute_uri = url_base + new_uri;
+            const absolute_uri = url_base + 'texlive/' + file_uri;
             try {
                 await this.addLazyFile(file_uri, absolute_uri);
             } catch (error) {
@@ -218,7 +217,7 @@ const PDFTeX = function (opt_workerPath) {
 
         onready.then(function () {
             cmd['msg_id'] = msg_id;
-            //console.debug('> sending', cmd);
+            console.debug('> sending', cmd);
             worker.postMessage(JSON.stringify(cmd));
         });
 
