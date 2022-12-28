@@ -26,7 +26,7 @@ const url_base = 'https://jamtis.github.io/web-latex/src/web/texlive.js/';
 class LatexCompiler {
     #pdf_tex = new _texlive_js_pdftex_js__WEBPACK_IMPORTED_MODULE_1__["default"](url_base + 'pdftex-worker.js');
     // #pdf_tex = new PDFTeX('./texlive.js/pdftex-worker.js');
-    static #path_name_regex = /^(.+)\/(.+?)$/;
+    static #path_name_regex = /^(.*?)\/?([^\/]+?)$/;
     static memory_size = 80*1024*1024;
     static #decoder = new TextDecoder;
 
@@ -98,7 +98,7 @@ class LatexCompiler {
             if (!folder_success) {
                 console.warn(`creating file '${file_uri}' failed`);
             } else {
-                console.log(`added file '${file_uri}'`);
+                // console.log(`added file '${file_uri}'`);
             }
         } else {
             console.log("skipping file: " + file_uri);
@@ -130,14 +130,14 @@ async function __findAllFiles() {
 
     async function __readDirectory(uri) {
         const entries = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readDirectory(uri);
-        console.log("read", uri.path, entries);
+        // console.log("read", uri.path, entries);
         for (const [name, type] of entries) {
             const new_uri = Object.assign({}, uri);
             new_uri.path += "/" + name;
             switch (type) {
             // type == 1 is directory
             case 1:
-                console.log("add", new_uri.path, "from", uri.path);
+                // console.log("add", new_uri.path, "from", uri.path);
                 file_uris.push(new_uri);
                 break;
             // type == 2 is directory
