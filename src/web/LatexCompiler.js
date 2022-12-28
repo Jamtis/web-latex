@@ -6,7 +6,8 @@ const url_base = 'https://jamtis.github.io/web-latex/src/web/texlive.js/';
 export default class LatexCompiler {
     #pdf_tex = new PDFTeX(url_base + 'pdftex-worker.js');
     // #pdf_tex = new PDFTeX('./texlive.js/pdftex-worker.js');
-    static #path_name_regex = /^(.*?)\/?([^\/]+?)$/;
+    static #path_name_split_regex = /^(.*?)\/?([^\/]+?)$/;
+    static #path_suffix_regex = /^(.*?)\/?([^\/]+?)$/;
     static memory_size = 80*1024*1024;
     static #decoder = new TextDecoder;
 
@@ -26,11 +27,12 @@ export default class LatexCompiler {
         const files = await files_promise;
         // console.log('files', files);
         for (const file of files) {
+            const suffix_path = new URL('../../' + file.path, 'file:').pathname;
             const content_array = await workspace.fs.readFile(file);
             // remove first 9 bits: BUG?????????????????????
             const content = this.constructor.#decoder.decode(content_array.buffer).substr(9);
             try {
-                await this.addLazyFile('../../' + file.path, toDataURI(content));
+                await this.addLazyFile(suffix_path, toDataURI(content));
             } catch (error) {
                 console.warn(file_uri, error);
             }
@@ -66,7 +68,7 @@ export default class LatexCompiler {
     }
 
     async addLazyFile(file_uri, content_uri) {
-        const [, parent_path, file_name] = file_uri.match(this.constructor.#path_name_regex);
+        const [, parent_path, file_name] = file_uri.match(this.constructor.#path_name_split_regex);
         const folder_promise = this.#pdf_tex.FS_createPath('/', parent_path, true, true);
         const folder_success = await folder_promise;
         if (!folder_success) {
