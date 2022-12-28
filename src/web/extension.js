@@ -8,7 +8,7 @@ export function activate(context) {
         try {
             vscode.window.showInformationMessage('web-latex compile!');
 
-            const file_name = await vscode.window.showInputBox();
+            const file_name = await vscode.window.showInputBox() || 'input.tex';
 
             const compiler = new LatexCompiler;
             await compiler.addFiles();
