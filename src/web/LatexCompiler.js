@@ -53,9 +53,8 @@ export default class LatexCompiler {
     async compileToDataURI(main_file) {
         await this.setMemorySize(this.memory_size);
         await this.addTexliveFiles();
-        const files_promise = __findAllFiles();
-        const files = await files_promise;
-        console.log('files', files);
+        const result = await this.#pdf_tex.FS_readdir('/');
+        console.log('result', result);
         const binary_pdf = await this.#pdf_tex.compileToBinary(main_file);
         return this.#pdf_tex.binaryToDataURI(binary_pdf);
     }

@@ -73,9 +73,8 @@ class LatexCompiler {
     async compileToDataURI(main_file) {
         await this.setMemorySize(this.memory_size);
         await this.addTexliveFiles();
-        const files_promise = __findAllFiles();
-        const files = await files_promise;
-        console.log('files', files);
+        const result = await this.#pdf_tex.FS_readdir('/');
+        console.log('result', result);
         const binary_pdf = await this.#pdf_tex.compileToBinary(main_file);
         return this.#pdf_tex.binaryToDataURI(binary_pdf);
     }
@@ -237,6 +236,7 @@ const PDFTeX = function (opt_workerPath) {
     }
     createCommand('FS_createDataFile'); // parentPath, filename, data, canRead, canWrite
     createCommand('FS_readFile'); // filename
+    createCommand('FS_readdir'); // filename
     createCommand('FS_unlink'); // filename
     createCommand('FS_createFolder'); // parent, name, canRead, canWrite
     createCommand('FS_createPath'); // parent, name, canRead, canWrite
