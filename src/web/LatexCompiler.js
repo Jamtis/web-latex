@@ -18,12 +18,13 @@ export default class LatexCompiler {
     }
 
     async addFiles() {
-        const files_promise = workspace.findFiles('**/*');
+        // use patch until bug is fixed
+        // const files_promise = workspace.findFiles('**/*');
+        // const files = await files_promise;
+        // console.log("files", files);
+        const files_promise = __findAllFiles();
         const files = await files_promise;
-        console.log("files", files);
-        const files_promise2 = __findAllFiles();
-        const files2 = await files_promise2;
-        console.log("files2", files2);
+        console.log('files', files);
         for (const file of files) {
             const content_array = await workspace.fs.readFile(file);
             // remove first 9 bits: BUG?????????????????????
