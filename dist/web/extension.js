@@ -407,7 +407,7 @@ function activate(context) {
             console.log(files2);
 
             const path = context.asAbsolutePath('src/web/texlive/');
-            const entries = await workspace.fs.readDirectory(path);
+            const entries = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readDirectory(path);
             console.log('absolutepath', path, entries);
         } catch (error) {
             console.error(error);
