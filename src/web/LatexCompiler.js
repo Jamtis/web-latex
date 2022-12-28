@@ -39,6 +39,8 @@ export default class LatexCompiler {
     }
 
     async addTexliveFiles() {
+        return await this.#pdf_tex.FS_createLazyFilesFromList('/', 'texlive.lst', url_base + 'texlive', true, true);
+        return;
         const request = await fetch(url_base + 'texlive.lst');
         const list = (await request.text()).split('\n');
         for (const file_uri of list) {
