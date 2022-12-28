@@ -21,7 +21,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const url_base = 'https://jamtis.github.io/web-latex/src/web/texlive.js/';
+const url_base = 'https://foc.ethz.ch/people/nicholasbrandt/web-latex/src/web/texlive.js/';
 
 class LatexCompiler {
     #pdf_tex = new _texlive_js_pdftex_js__WEBPACK_IMPORTED_MODULE_1__["default"](url_base + 'pdftex-worker.js');

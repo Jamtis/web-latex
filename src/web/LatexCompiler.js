@@ -1,7 +1,7 @@
 import {workspace} from 'vscode';
 import PDFTeX from './texlive.js/pdftex.js';
 
-const url_base = 'https://jamtis.github.io/web-latex/src/web/texlive.js/';
+const url_base = 'https://foc.ethz.ch/people/nicholasbrandt/web-latex/src/web/texlive.js/';
 
 export default class LatexCompiler {
     #pdf_tex = new PDFTeX(url_base + 'pdftex-worker.js');
