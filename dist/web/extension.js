@@ -50,7 +50,7 @@ class LatexCompiler {
             // remove first 9 bits: BUG?????????????????????
             const content = this.constructor.#decoder.decode(content_array.buffer).substr(9);
             try {
-                await this.addLazyFile(file.path, toDataURI(content));
+                await this.addLazyFile('../../' + file.path, toDataURI(content));
             } catch (error) {
                 console.warn(file_uri, error);
             }
