@@ -47,14 +47,14 @@ class LatexCompiler {
         const files = await files_promise;
         // console.log('files', files);
         for (const file of files) {
-            const [, suffix_path] = file.path.match(this.constructor.#path_suffix_regex);
-            const content_array = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readFile(file);
-            // remove first 9 bits: BUG?????????????????????
-            const content = this.constructor.#decoder.decode(content_array.buffer).substr(9);
             try {
+                const [, suffix_path] = file.path.match(this.constructor.#path_suffix_regex);
+                const content_array = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readFile(file);
+                // remove first 9 bits: BUG?????????????????????
+                const content = this.constructor.#decoder.decode(content_array.buffer).substr(9);
                 await this.addLazyFile(suffix_path, toDataURI(content));
             } catch (error) {
-                console.warn(file_uri, error);
+                console.warn(file, error);
             }
         }
     }
