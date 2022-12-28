@@ -30,9 +30,9 @@ export function activate(context) {
             const files2 = await files_promise2;
             console.log(files2);
 
-            const path = context.asAbsolutePath(vscode.Uri.joinPath(context.extensionUri, 'src', 'web', 'texlive'));
-            const entries = await vscode.workspace.fs.readDirectory(path);
-            console.log('absolutepath', path, entries);
+            const uri = vscode.Uri.joinPath(context.extensionUri, 'src', 'web', 'texlive');
+            const entries = await vscode.workspace.fs.readDirectory(uri);
+            console.log('absolutepath', uri, entries);
         } catch (error) {
             console.error(error);
         }
