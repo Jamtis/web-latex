@@ -181,6 +181,7 @@ const PDFTeX = function (opt_workerPath) {
 
     worker.onmessage = function (ev) {
         const data = JSON.parse(ev.data);
+        console.log('< received', data);
 
         if (!('command' in data))
             console.log("missing command!", data);
