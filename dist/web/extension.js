@@ -247,11 +247,11 @@ const PDFTeX = function (opt_workerPath) {
     createCommand('set_TOTAL_MEMORY'); // size
 
     self.compileToBinary = async function(main_file) {
+        const output_file = main_file.match(/^(.*?)(?:\.tex)?$/)[1] + '.pdf';
         await sendCommand({
             'command': 'run',
             'arguments': ['-interaction=nonstopmode', '-output-format', 'pdf', main_file],
         });
-        const output_file = main_file.match(/^(.*?)(?:\.tex)?$/)[1] + '.pdf';
         const binary_pdf = await self.FS_readFile(output_file);
         return binary_pdf;
     };
