@@ -7,7 +7,7 @@ export default class LatexCompiler {
     #pdf_tex = new PDFTeX(url_base + 'pdftex-worker.js');
     static #path_name_split_regex = /^(.*?)\/?([^\/]+?)$/;
     static #path_suffix_regex = /^\/(?:.*?)\/(?:.*?)(\/.+)$/;
-    static memory_size = 80*1024*1024;
+    static #memory_size = 80*1024*1024;
     static #decoder = new TextDecoder;
 
     constructor() {
@@ -53,7 +53,6 @@ export default class LatexCompiler {
     }
 
     async compileToDataURI(main_file) {
-        await this.setMemorySize(this.memory_size);
         await this.addTexliveFiles();
         // this.#pdf_tex.FS_readdir('/');
         // console.log('result', result);
@@ -61,8 +60,11 @@ export default class LatexCompiler {
         return this.#pdf_tex.binaryToDataURI(binary_pdf);
     }
 
-    async setMemorySize(size) {
-        this.memory_size = size;
+    async setMemorySize(size = this.#memory_size) {
+        if (isNaN(size) || size < 0 || size == Infinity) {
+            throw new Error('invalid size');
+        }
+        this.#memory_size = size;
         const result_size = await this.#pdf_tex.set_TOTAL_MEMORY(size);
         return size == result_size;
     }

@@ -27,7 +27,7 @@ class LatexCompiler {
     #pdf_tex = new _texlive_js_pdftex_js__WEBPACK_IMPORTED_MODULE_1__["default"](url_base + 'pdftex-worker.js');
     static #path_name_split_regex = /^(.*?)\/?([^\/]+?)$/;
     static #path_suffix_regex = /^\/(?:.*?)\/(?:.*?)(\/.+)$/;
-    static memory_size = 80*1024*1024;
+    static #memory_size = 80*1024*1024;
     static #decoder = new TextDecoder;
 
     constructor() {
@@ -73,7 +73,6 @@ class LatexCompiler {
     }
 
     async compileToDataURI(main_file) {
-        await this.setMemorySize(this.memory_size);
         await this.addTexliveFiles();
         // this.#pdf_tex.FS_readdir('/');
         // console.log('result', result);
@@ -81,8 +80,11 @@ class LatexCompiler {
         return this.#pdf_tex.binaryToDataURI(binary_pdf);
     }
 
-    async setMemorySize(size) {
-        this.memory_size = size;
+    async setMemorySize(size = this.#memory_size) {
+        if (isNaN(size) || size < 0 || size == Infinity) {
+            throw new Error('invalid size');
+        }
+        this.#memory_size = size;
         const result_size = await this.#pdf_tex.set_TOTAL_MEMORY(size);
         return size == result_size;
     }
@@ -388,6 +390,7 @@ function activate(context) {
             const file_name = await vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInputBox() || 'input.tex';
 
             const compiler = new _LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"];
+            await this.setMemorySize();
             await compiler.addFiles();
             const data_uri = await compiler.compileToDataURI(file_name);
             console.log(data_uri);
