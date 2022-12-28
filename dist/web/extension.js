@@ -378,7 +378,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function activate(context) {
-    console.log('activating web-latex');
+    console.log('activating web-latex', context.extensionPath);
 
     const compile_command = vscode__WEBPACK_IMPORTED_MODULE_0__.commands.registerCommand('latex-js.compile', async () => {
         try {

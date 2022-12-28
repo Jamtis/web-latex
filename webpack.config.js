@@ -26,17 +26,7 @@ const webExtensionConfig = {
 		devtoolModuleFilenameTemplate: '../../[resource-path]'
 	},
 	resolve: {
-		mainFields: ['browser', 'module', 'main'], // look for `browser` entry point in imported node modules
-		extensions: ['.js'], // support ts-files and js-files
-		alias: {
-			// provides alternate implementation for node module and source files
-		},
-		fallback: {
-			// Webpack 5 no longer polyfills Node.js core modules automatically.
-			// see https://webpack.js.org/configuration/resolve/#resolvefallback
-			// for the list of Node.js core module polyfills.
-			'assert': require.resolve('assert')
-		}
+		mainFields: ['browser', 'module', 'main']
 	},
 	module: {
 		rules: [{
@@ -44,24 +34,10 @@ const webExtensionConfig = {
 			exclude: /node_modules|dist/,
 		}]
 	},
-	plugins: [
-		new webpack.optimize.LimitChunkCountPlugin({
-			maxChunks: 1 // disable chunks by default since web extensions must be a single bundle
-		}),
-		new webpack.ProvidePlugin({
-			process: 'process/browser', // provide a shim for the global `process` variable
-		}),
-	],
 	externals: {
 		'vscode': 'commonjs vscode', // ignored because it doesn't exist
 	},
-	performance: {
-		hints: false
-	},
-	devtool: 'nosources-source-map', // create a source map that points to the original source file
-	infrastructureLogging: {
-		level: "log", // enables logging required for problem matchers
-	},
+	devtool: 'nosources-source-map' // create a source map that points to the original source file
 };
 
-module.exports = [ webExtensionConfig ];
+module.exports = [webExtensionConfig];

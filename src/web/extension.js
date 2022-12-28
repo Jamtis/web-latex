@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import LatexCompiler from './LatexCompiler.js';
 
 export function activate(context) {
-    console.log('activating web-latex');
+    console.log('activating web-latex', context.extensionPath);
 
     const compile_command = vscode.commands.registerCommand('latex-js.compile', async () => {
         try {
