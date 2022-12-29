@@ -27,18 +27,18 @@ class LatexCompiler {
     #pdf_tex = new _texlive_js_pdftex_js__WEBPACK_IMPORTED_MODULE_1__["default"](url_base + 'pdftex-worker.js');
     static #path_name_split_regex = /^(.*?)\/?([^\/]+?)$/;
     static #path_suffix_regex = /^\/(?:.*?)\/(?:.*?)(\/.+)$/;
-    #memory_size = 80*1024*1024;
+    #memory_size = 80 * 1024 * 1024;
     static #decoder = new TextDecoder;
 
     constructor() {
         this.#pdf_tex.on_stdout =
-        this.#pdf_tex.on_stderr = message => {
-            console.log(message);
-        };
+            this.#pdf_tex.on_stderr = message => {
+                console.log(message);
+            };
     }
 
     async addFiles() {
-        const content_array = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readFile('/input.tex');
+        const content_array = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readFile({ external: 'vscode-vfs://github/Jamtis/paper/input.tex', path: '/Jamtis/paper/input.tex', scheme: 'vscode-vfs', authority: 'github' });
         // remove first 9 bits: BUG?????????????????????
         const content = this.constructor.#decoder.decode(content_array.buffer).substr(9);
         // await this.addLazyFile(suffix_path, toDataURI(content));
@@ -169,15 +169,15 @@ async function __findAllFiles() {
             const new_uri = Object.assign({}, uri);
             new_uri.path += "/" + name;
             switch (type) {
-            // type == 1 is directory
-            case 1:
-                // console.log("add", new_uri.path, "from", uri.path);
-                file_uris.push(new_uri);
-                break;
-            // type == 2 is directory
-            case 2:
-                await __readDirectory(new_uri);
-            // type == 0 is other (submodule, ...)
+                // type == 1 is directory
+                case 1:
+                    // console.log("add", new_uri.path, "from", uri.path);
+                    file_uris.push(new_uri);
+                    break;
+                // type == 2 is directory
+                case 2:
+                    await __readDirectory(new_uri);
+                // type == 0 is other (submodule, ...)
             }
         }
     }
