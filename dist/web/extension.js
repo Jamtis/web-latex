@@ -120,11 +120,11 @@ class LatexCompiler {
 
     async addPreloadedFile(file_uri, content_view) {
         const [, parent_path, file_name] = file_uri.match(this.constructor.#path_name_split_regex);
-        const folder_promise = this.#pdf_tex.FS_createPath('/', parent_path, true, true);
+        /*const folder_promise = this.#pdf_tex.FS_createPath('/', parent_path, true, true);
         const folder_success = await folder_promise;
         if (!folder_success) {
             throw new Error(`creating folder '${parent}' failed`);
-        }
+        }*/
 
         if (!file_name.match(/^(?:\.|)$/)) {
             const file_promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
