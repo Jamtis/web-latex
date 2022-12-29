@@ -249,7 +249,7 @@ const PDFTeX = function (opt_workerPath) {
 
         onready.then(function () {
             cmd['msg_id'] = msg_id;
-            console.debug('> sending', cmd);
+            console.log('> sending', cmd);
             worker.postMessage(JSON.stringify(cmd));
         });
 
