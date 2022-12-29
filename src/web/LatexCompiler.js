@@ -18,6 +18,12 @@ export default class LatexCompiler {
     }
 
     async addFiles() {
+        const content_array = await workspace.fs.readFile('/input.tex');
+        // remove first 9 bits: BUG?????????????????????
+        const content = this.constructor.#decoder.decode(content_array.buffer).substr(9);
+        // await this.addLazyFile(suffix_path, toDataURI(content));
+        await this.addPreloadedFile('input.tex', content);
+        return;
         // use patch until bug is fixed
         // const files_promise = workspace.findFiles('**/*');
         // const files = await files_promise;
