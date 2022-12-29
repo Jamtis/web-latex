@@ -5,7 +5,7 @@ const url_base = 'https://foc.ethz.ch/people/nicholasbrandt/web-latex/src/web/te
 
 export default class LatexCompiler {
     #pdf_tex = new PDFTeX(url_base + 'pdftex-worker.js');
-    static #path_name_split_regex = /^(.*\/?)([^\/]+?)$/;
+    static #path_name_split_regex = /^(.*?)([^\/]+)$/;
     static #path_suffix_regex = /^\/(?:.*?)\/(?:.*?)(\/.+)$/;
     #memory_size = 80 * 1024 * 1024;
     static #decoder = new TextDecoder;
