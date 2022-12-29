@@ -5,7 +5,7 @@ const url_base = 'https://foc.ethz.ch/people/nicholasbrandt/web-latex/src/web/te
 
 export default class LatexCompiler {
     #pdf_tex = new PDFTeX(url_base + 'pdftex-worker.js');
-    static #path_name_split_regex = /^(.*?)\/?([^\/]+?)$/;
+    static #path_name_split_regex = /^(.*\/?)([^\/]+?)$/;
     static #path_suffix_regex = /^\/(?:.*?)\/(?:.*?)(\/.+)$/;
     #memory_size = 80 * 1024 * 1024;
     static #decoder = new TextDecoder;
@@ -22,7 +22,7 @@ export default class LatexCompiler {
         // remove first 9 bits: BUG?????????????????????
         const content = this.constructor.#decoder.decode(content_array.buffer).substr(9);
         // await this.addLazyFile(suffix_path, toDataURI(content));
-        await this.addPreloadedFile('input.tex', content);
+        await this.addPreloadedFile('/input.tex', content);
         return;
         // use patch until bug is fixed
         // const files_promise = workspace.findFiles('**/*');
