@@ -1,17 +1,16 @@
 /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ([
 /* 0 */,
 /* 1 */
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("vscode");
 
 /***/ }),
 /* 2 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ LatexCompiler)
@@ -19,14 +18,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vscode__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var vscode__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vscode__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _texlive_js_pdftex_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
-/* harmony import */ var _texlive_js_pdftex_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_texlive_js_pdftex_js__WEBPACK_IMPORTED_MODULE_1__);
 
 
 
 const url_base = 'https://foc.ethz.ch/people/nicholasbrandt/web-latex/src/web/texlive.js/';
 
 class LatexCompiler {
-    #pdf_tex = new (_texlive_js_pdftex_js__WEBPACK_IMPORTED_MODULE_1___default())(url_base + 'pdftex-worker.js');
+    #pdf_tex = new _texlive_js_pdftex_js__WEBPACK_IMPORTED_MODULE_1__["default"](url_base + 'pdftex-worker.js');
     static #path_name_split_regex = /^(.*?)([^\/]+)$/;
     static #path_suffix_regex = /^\/(?:.*?)\/(?:.*?)(\/.+)$/;
     #memory_size = 80 * 1024 * 1024;
@@ -34,9 +32,9 @@ class LatexCompiler {
 
     constructor() {
         this.#pdf_tex.on_stdout =
-            this.#pdf_tex.on_stderr = message => {
-                console.log(message);
-            };
+        this.#pdf_tex.on_stderr = message => {
+            console.log(message);
+        };
     }
 
     async addFiles() {
@@ -187,228 +185,145 @@ async function __findAllFiles() {
 
 /***/ }),
 /* 3 */
-/***/ (() => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var TeXLive = function(opt_workerPath) {
-  //var self=this;
-  var chunksize= determineChunkSize();
-  if (!opt_workerPath) {
-    opt_workerPath = '';
-  }
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _ExtendedPromise_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
 
 
-  var component = function(workerPath) {
-    var self = this;
-    var worker = new Worker(workerPath);
-    self.terminate = function(){worker.terminate()};
-    self.initialized=false;
-    self.on_stdout = function(msg) {
-      console.log(msg);
+const PDFTeX = function (opt_workerPath) {
+    if (!opt_workerPath) {
+        opt_workerPath = 'pdftex-worker.js';
+    }
+    const worker = new Worker(opt_workerPath);
+    const self = this;
+
+    self.on_stdout = function (msg) {
+        console.log(msg);
     }
 
-    self.on_stderr = function(msg) {
-      console.log(msg);
+    self.on_stderr = function (msg) {
+        console.log(msg);
     }
-    worker.onmessage = function(ev) {
-      var data = JSON.parse(ev.data);
-      var msg_id;
-      if(!('command' in data))
-        console.log("missing command!", data);
-      switch(data['command']) {
-        case 'ready':
-          onready.done(true);
-          break;
-        case 'stdout':
-        case 'stderr':
-          self['on_'+data['command']](data['contents']);
-          break;
-        default:
-          //console.debug('< received', data);
-          msg_id = data['msg_id'];
-          if(('msg_id' in data) && (msg_id in promises)) {
-            promises[msg_id].done(data['result']);
-          }
-          else
-            console.warn('Unknown worker message '+msg_id+'!');
-      }
-    }
-    var onready = new promise.Promise();
-    var promises = [];
-    var chunkSize = undefined;
-    self.sendCommand = function(cmd) {
-      var p = new promise.Promise();
-      var msg_id = promises.push(p)-1;
-      onready.then(function() {
-        cmd['msg_id'] = msg_id;
-        worker.postMessage(JSON.stringify(cmd));
-      });
-      return p;
-    };
-    self.createCommand = function(command) {
-      self[command] = function() {
-        var args = [].concat.apply([], arguments);
 
-        return self.sendCommand({
-          'command':  command,
-          'arguments': args,
+
+    worker.onmessage = function (ev) {
+        const data = JSON.parse(ev.data);
+        console.log('< received', data);
+
+        if (!('command' in data))
+            console.log("missing command!", data);
+        switch (data.command) {
+            case 'ready':
+                onready.resolve(true);
+                break;
+            case 'stdout':
+            case 'stderr':
+                self['on_' + data.command](data.contents);
+                break;
+            default:
+                //console.debug('< received', data);
+                const msg_id = data['msg_id'];
+                if (('msg_id' in data) && (msg_id in promises)) {
+                    const promise = promises[msg_id];
+                    if ('error' in data) {
+                        promise.reject(data.error);
+                    } else {
+                        promise.resolve(data.result);
+                    }
+                } else
+                    console.warn('Unknown worker message ' + msg_id + '!');
+        }
+    }
+
+    const onready = new _ExtendedPromise_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
+    const promises = [];
+    const chunkSize = undefined;
+
+    const sendCommand = function (cmd) {
+        const p = new _ExtendedPromise_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
+        const msg_id = promises.push(p) - 1;
+
+        onready.then(function () {
+            cmd['msg_id'] = msg_id;
+            console.log('> sending', cmd);
+            worker.postMessage(JSON.stringify(cmd));
         });
-      }
+
+        return p;
+    };
+
+
+    const createCommand = function (command) {
+        self[command] = function () {
+            const args = [].concat.apply([], arguments);
+
+            return sendCommand({
+                'command': command,
+                'arguments': args,
+            });
+        }
     }
-    self.createCommand('FS_createDataFile'); // parentPath, filename, data, canRead, canWrite
-    self.createCommand('FS_readFile'); // filename
-    self.createCommand('FS_unlink'); // filename
-    self.createCommand('FS_createFolder'); // parent, name, canRead, canWrite
-    self.createCommand('FS_createPath'); // parent, name, canRead, canWrite
-    self.createCommand('FS_createLazyFile'); // parent, name, canRead, canWrite
-    self.createCommand('FS_createLazyFilesFromList'); // parent, list, parent_url, canRead, canWrite
-    self.createCommand('set_TOTAL_MEMORY'); // size
-  };
+    createCommand('FS_createDataFile'); // parentPath, filename, data, canRead, canWrite
+    createCommand('FS_readFile'); // filename
+    createCommand('FS_readdir'); // filename
+    createCommand('FS_unlink'); // filename
+    createCommand('FS_createFolder'); // parent, name, canRead, canWrite
+    createCommand('FS_createPath'); // parent, name, canRead, canWrite
+    createCommand('FS_createLazyFile'); // parent, name, canRead, canWrite
+    createCommand('FS_createLazyFilesFromList'); // parent, list, parent_url, canRead, canWrite
+    createCommand('set_TOTAL_MEMORY'); // size
 
-  var pdftex=new component(opt_workerPath+'pdftex-worker.js');
-  pdftex.compile = function(source_code) {
-    var self=this;
-    var p = new promise.Promise();
-    pdftex.compileRaw(source_code).then(
-      function(binary_pdf) {
-        if(binary_pdf === false)
-          return p.done(false);
-        pdf_dataurl = 'data:application/pdf;charset=binary;base64,' + window.btoa(binary_pdf);
-        return p.done(pdf_dataurl);
-      });
-    return p;
-  };
-  pdftex.compileRaw = function(source_code) {
-     var self=this;
-     return pdftex.run(source_code).then(
-      function() {
-        return self.FS_readFile('/input.pdf');
-      }
-    );
-  };
-  pdftex.run = function(source_code) {
-    var self=this;
-    var commands;
-    if(self.initialized)
-      commands = [
-        curry(self, 'FS_unlink', ['/input.tex']),
-        curry(self, 'FS_createDataFile', ['/', 'input.tex', source_code, true, true])
-      ];
-    else
-      commands = [
-        curry(self, 'FS_createDataFile', ['/', 'input.tex', source_code, true, true]),
-        curry(self, 'FS_createLazyFilesFromList', ['/', 'texlive.lst', './texlive', true, true]),
-      ];
-
-    var sendCompile = function() {
-      self.initialized = true;
-      return self.sendCommand({
-        'command': 'run',
-        'arguments': ['-interaction=nonstopmode', '-output-format', 'pdf', 'input.tex'],
-  //        'arguments': ['-debug-format', '-output-format', 'pdf', '&latex', 'input.tex'],
-      });
+    self.compileToBinary = async function(main_file) {
+        const output_file = main_file.match(/^(.*?)(?:\.tex)?$/)[1] + '.pdf';
+        await sendCommand({
+            'command': 'run',
+            'arguments': ['-interaction=nonstopmode', '-output-format', 'pdf', main_file],
+        });
+        const binary_pdf = await self.FS_readFile(output_file);
+        return binary_pdf;
     };
-    return promise.chain(commands)
-      .then(sendCompile)
-  };
-  TeXLive.prototype.pdftex = pdftex;
 
-  var bibtex = new component(opt_workerPath+'bibtex-worker.js');
-  bibtex.compile = function(aux){
-    var self=this;
-    var p = new promise.Promise();
-    bibtex.compileRaw(aux).then(
-      function(binary_bbl) {
-        if(binary_bbl === false)
-          return p.done(false);
-        pdf_dataurl = 'data:text/plain;charset=binary;base64,' + window.btoa(binary_bbl);
-        return p.done(pdf_dataurl);
-      });
-    return p;
-  };
-  bibtex.compileRaw = function(aux) {
-     var self=this;
-     return bibtex.run(aux).then(
-      function() {
-        return self.FS_readFile('/input.bbl');
-      }
-    );
-  };
-  bibtex.run = function(source_code) {
-    var self=this;
-    var commands;
-    if(self.initialized)
-      commands = [
-        curry(self, 'FS_unlink', ['/input.aux']),
-        curry(self, 'FS_createDataFile', ['/', 'input.aux', aux, true, true])
-      ];
-    else
-      commands = [
-        curry(self, 'FS_createDataFile', ['/', 'input.aux', aux, true, true]),
-        curry(self, 'FS_createLazyFilesFromList', ['/', 'texlive.lst', './texlive', true, true]),
-      ];
-    var sendCompile = function() {
-      self.initialized = true;
-      return self.sendCommand({
-        'command': 'run',
-        'arguments': ['input.aux'],
-      });
+    self.binaryToDataURI = function(binary) {
+        return 'data:application/pdf;charset=binary;base64,' + btoa(binary);
     };
-    return promise.chain(commands)
-      .then(sendCompile)
-  };
-  TeXLive.prototype.bibtex=bibtex;
-  TeXLive.prototype.terminate = function(){
-    pdftex.terminate();
-    bibtex.terminate();
-  }
 };
- var determineChunkSize = function() {
-    var size = 1024;
-    var max = undefined;
-    var min = undefined;
-    var delta = size;
-    var success = true;
-    var buf;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (PDFTeX);
 
-    while(Math.abs(delta) > 100) {
-      if(success) {
-        min = size;
-        if(typeof(max) === 'undefined')
-          delta = size;
-        else
-          delta = (max-size)/2;
-      }
-      else {
-        max = size;
-        if(typeof(min) === 'undefined')
-          delta = -1*size/2;
-        else
-          delta = -1*(size-min)/2;
-      }
-      size += delta;
+/***/ }),
+/* 4 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-      success = true;
-      try {
-        buf = String.fromCharCode.apply(null, new Uint8Array(size));
-        sendCommand({
-          command: 'test',
-          data: buf,
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ ExtendedPromise)
+/* harmony export */ });
+class ExtendedPromise extends Promise {
+    #resolve;
+    #reject;
+    constructor(callback) {
+        let _resolve;
+        let _reject;
+        super((resolve, reject) => {
+            _resolve = resolve;
+            _reject = reject;
         });
-      }
-      catch(e) {
-        success = false;
-      }
+        this.#resolve = _resolve;
+        this.#reject = _reject;
+        callback?.(_resolve, _reject);
     }
 
-    return size;
-  };
-
-    curry = function(obj, fn, args) {
-    return function() {
-      return obj[fn].apply(obj, args);
+    resolve(value) {
+        this.#resolve(value);
     }
-  }
 
+    reject(value) {
+        this.#reject(value);
+    }
+};
 
 /***/ })
 /******/ 	]);
@@ -480,9 +395,8 @@ var TeXLive = function(opt_workerPath) {
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "activate": () => (/* binding */ activate),
