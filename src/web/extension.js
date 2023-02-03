@@ -14,6 +14,9 @@ export function activate(context) {
             await compiler.addFiles();
             const data_uri = await compiler.compileToDataURI(file_name);
             console.log(data_uri);
+
+            const panel = vscode.window.createWebviewPanel('pdfoutput', 'PDF Output', vscode.ViewColumn.One, {});
+            panel.webview.html = `<iframe src='${data_uri}'></iframe>`;
         } catch (error) {
             console.error(error);
         }

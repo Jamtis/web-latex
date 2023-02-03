@@ -30,21 +30,23 @@ class LatexCompiler {
         return engine;
     })();
     static #path_name_split_regex = /^(.*?)([^\/]+)$/;
-    static #path_suffix_regex = /^\/(?:.*?)\/(?:.*?)(\/.+)$/;
+    static #path_suffix_regex_local = /^\/(?:.*?)(\/.+)$/;
+    static #path_suffix_regex_remote = /^\/(?:.*?)\/(?:.*?)(\/.+)$/;
     #memory_size = 80 * 1024 * 1024;
     static #decoder = new TextDecoder;
     log;
 
-    constructor() { }
+    constructor() {}
 
     async addFiles() {
-        const content_array = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readFile({ external: 'vscode-vfs://github/Jamtis/paper/input.tex', path: '/Jamtis/paper/input.tex', scheme: 'vscode-vfs', authority: 'github' });
+        const engine = await this.#pdftex_engine;
+        /*const content_array = await workspace.fs.readFile({ external: 'vscode-vfs://github/Jamtis/paper/input.tex', path: '/Jamtis/paper/input.tex', scheme: 'vscode-vfs', authority: 'github' });
         // remove first 9 bits: BUG?????????????????????
         const content = this.constructor.#decoder.decode(content_array.buffer).substr(9);
         // await this.addLazyFile(suffix_path, toDataURI(content));
-        const engine = await this.#pdftex_engine;
         engine.writeMemFSFile('/input.tex', content);
-        return;
+        return;*/
+
         // use patch until bug is fixed
         // const files_promise = workspace.findFiles('**/*');
         // const files = await files_promise;
@@ -54,12 +56,17 @@ class LatexCompiler {
         // console.log('files', files);
         for (const file of files) {
             try {
-                const [, suffix_path] = file.path.match(this.constructor.#path_suffix_regex);
+                const regex = file.authority == '' ? this.constructor.#path_suffix_regex_local : this.constructor.#path_suffix_regex_remote;
+                const [, suffix_path] = file.path.match(regex);
                 const content_array = await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.readFile(file);
                 // remove first 9 bits: BUG?????????????????????
-                const content = this.constructor.#decoder.decode(content_array.buffer).substr(9);
-                // await this.addLazyFile(suffix_path, toDataURI(content));
-                await this.addFile(suffix_path, content);
+
+                // decode with a TextDecoder
+                // const content = this.constructor.#decoder.decode(content_array.buffer).substr(9);
+                // supply array directly
+                const content = content_array;
+                console.log("create", suffix_path);
+                engine.writeMemFSFile(suffix_path, content);
             } catch (error) {
                 console.warn(file, error);
             }
@@ -474,6 +481,9 @@ function activate(context) {
             await compiler.addFiles();
             const data_uri = await compiler.compileToDataURI(file_name);
             console.log(data_uri);
+
+            const panel = vscode__WEBPACK_IMPORTED_MODULE_0__.window.createWebviewPanel('pdfoutput', 'PDF Output', vscode__WEBPACK_IMPORTED_MODULE_0__.ViewColumn.One, {});
+            panel.webview.html = `<iframe src='${data_uri}'></iframe>`;
         } catch (error) {
             console.error(error);
         }
