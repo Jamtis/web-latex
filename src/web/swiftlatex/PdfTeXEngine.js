@@ -246,3 +246,5 @@ var PdfTeXEngine = /** @class */ (function () {
     return PdfTeXEngine;
 }());
 exports.PdfTeXEngine = PdfTeXEngine;
+
+export default PdfTeXEngine;
