@@ -1,20 +1,20 @@
 import { workspace } from 'vscode';
-import PDFTeX from './texlive.js/pdftex.js';
+import './swiftlatex/PdfTeXEngine.js';
 
 const url_base = 'https://foc.ethz.ch/people/nicholasbrandt/web-latex/src/web/texlive.js/';
 
 export default class LatexCompiler {
-    #pdf_tex = new PDFTeX(url_base + 'pdftex-worker.js');
+    #pdftex_engine = (async () => {
+        const engine = new PdfTeXEngine;
+        await engine.loadEngine();
+        return engine;
+    });
     static #path_name_split_regex = /^(.*?)([^\/]+)$/;
     static #path_suffix_regex = /^\/(?:.*?)\/(?:.*?)(\/.+)$/;
     #memory_size = 80 * 1024 * 1024;
     static #decoder = new TextDecoder;
 
     constructor() {
-        this.#pdf_tex.on_stdout =
-        this.#pdf_tex.on_stderr = message => {
-            console.log(message);
-        };
     }
 
     async addFiles() {
@@ -22,7 +22,8 @@ export default class LatexCompiler {
         // remove first 9 bits: BUG?????????????????????
         const content = this.constructor.#decoder.decode(content_array.buffer).substr(9);
         // await this.addLazyFile(suffix_path, toDataURI(content));
-        await this.addPreloadedFile('/input.tex', content);
+        const engine = await this.#pdftex_engine;
+        engine.writeMemFSFile('/input.tex', content);
         return;
         // use patch until bug is fixed
         // const files_promise = workspace.findFiles('**/*');
@@ -38,85 +39,19 @@ export default class LatexCompiler {
                 // remove first 9 bits: BUG?????????????????????
                 const content = this.constructor.#decoder.decode(content_array.buffer).substr(9);
                 // await this.addLazyFile(suffix_path, toDataURI(content));
-                await this.addPreloadedFile(suffix_path, content);
+                await this.addFile(suffix_path, content);
             } catch (error) {
                 console.warn(file, error);
             }
         }
     }
 
-    async addTexliveFiles() {
-        return await this.#pdf_tex.FS_createLazyFilesFromList('/', url_base + 'texlive.lst', url_base + 'texlive', true, true);
-        const request = await fetch(url_base + 'texlive.lst');
-        const list = (await request.text()).split('\n');
-        for (const file_uri of list) {
-            const absolute_uri = url_base + 'texlive/' + file_uri;
-            try {
-                await this.addLazyFile(file_uri, absolute_uri);
-            } catch (error) {
-                console.warn(file_uri, error);
-            }
-        }
-    }
-
     async compileToDataURI(main_file) {
-        await this.addTexliveFiles();
-        // this.#pdf_tex.FS_readdir('/');
-        // console.log('result', result);
-        const binary_pdf = await this.#pdf_tex.compileToBinary(main_file);
-        return this.#pdf_tex.binaryToDataURI(binary_pdf);
-    }
-
-    async setMemorySize(size = this.#memory_size) {
-        if (isNaN(size) || size < 0 || size == Infinity) {
-            throw new Error('invalid size');
-        }
-        this.#memory_size = size;
-        const result_size = await this.#pdf_tex.set_TOTAL_MEMORY(size);
-        return size == result_size;
-    }
-
-    async addLazyFile(file_uri, content_uri) {
-        const [, parent_path, file_name] = file_uri.match(this.constructor.#path_name_split_regex);
-        const folder_promise = this.#pdf_tex.FS_createPath('/', parent_path, true, true);
-        const folder_success = await folder_promise;
-        if (!folder_success) {
-            throw new Error(`creating folder '${parent}' failed`);
-        }
-
-        if (!file_name.match(/^(?:\.|)$/)) {
-            const file_promise = this.#pdf_tex.FS_createLazyFile(parent_path, file_name, content_uri, true, true);
-            // const file_promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
-            const file_result = await file_promise;
-            if (!file_result) {
-                console.warn(`creating file '${file_uri}' failed`);
-            } else {
-                // console.log(`added file '${file_uri}'`);
-            }
-        } else {
-            console.log("skipping file: " + file_uri);
-        }
-    }
-
-    async addPreloadedFile(file_uri, content_view) {
-        const [, parent_path, file_name] = file_uri.match(this.constructor.#path_name_split_regex);
-        /*const folder_promise = this.#pdf_tex.FS_createPath('/', parent_path, true, true);
-        const folder_success = await folder_promise;
-        if (!folder_success) {
-            throw new Error(`creating folder '${parent}' failed`);
-        }*/
-
-        if (!file_name.match(/^(?:\.|)$/)) {
-            const file_promise = this.#pdf_tex.FS_createDataFile(parent_path, file_name, content_view, true, true);
-            const file_result = await file_promise;
-            if (!file_result) {
-                console.warn(`creating file '${file_uri}' failed`);
-            } else {
-                // console.log(`added file '${file_uri}'`);
-            }
-        } else {
-            console.log("skipping file: " + file_uri);
-        }
+        const engine = await this.#pdftex_engine;
+        engine.setEngineMainFile(main_file);
+        const binary_pdf = await engine.compileLaTeX();
+        console.log(binary_pdf);
+        // return this.#pdf_tex.binaryToDataURI(binary_pdf);
     }
 };
 

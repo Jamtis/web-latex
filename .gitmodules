@@ -1,3 +1,0 @@
-[submodule "texlive.js"]
-	path = src/web/texlive.js
-	url = git@github.com:Jamtis/texlive.js.git
