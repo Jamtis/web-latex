@@ -6,7 +6,7 @@ export default class LatexCompiler {
         const engine = new PdfTeXEngine;
         await engine.loadEngine();
         return engine;
-    });
+    })();
     static #path_name_split_regex = /^(.*?)([^\/]+)$/;
     static #path_suffix_regex = /^\/(?:.*?)\/(?:.*?)(\/.+)$/;
     #memory_size = 80 * 1024 * 1024;
