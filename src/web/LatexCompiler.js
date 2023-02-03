@@ -1,8 +1,12 @@
 import { workspace } from 'vscode';
-import PdfTeXEngine from './swiftlatex/PdfTeXEngine.js';
+
+const base_url = 'https://foc.ethz.ch/people/nicholasbrandt/web-latex/';
+
+const PdfTeXEngine_promise = eval(`(async () => {return await import('${base_url}src/web/swiftlatex/PdfTeXEngine.js');})()`);
 
 export default class LatexCompiler {
     #pdftex_engine = (async () => {
+        const PdfTeXEngine = await PdfTeXEngine_promise;
         const engine = new PdfTeXEngine;
         await engine.loadEngine();
         return engine;
