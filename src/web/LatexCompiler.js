@@ -1,23 +1,21 @@
 import { workspace } from 'vscode';
 
-const base_url = 'https://foc.ethz.ch/people/nicholasbrandt/web-latex/';
-
-const PdfTeXEngine_promise = eval(`(async () => {return await import('${base_url}src/web/swiftlatex/PdfTeXEngine.js');})()`);
+import PdfTeXEngine from './swiftlatex/PdfTeXEngine.js';
 
 export default class LatexCompiler {
     #pdftex_engine = (async () => {
-        const PdfTeXEngine = await PdfTeXEngine_promise;
         const engine = new PdfTeXEngine;
         await engine.loadEngine();
+        engine.setTexliveEndpoint('https://ondemand-service-d3ncqg2pmq-uc.a.run.app/');
         return engine;
     })();
     static #path_name_split_regex = /^(.*?)([^\/]+)$/;
     static #path_suffix_regex = /^\/(?:.*?)\/(?:.*?)(\/.+)$/;
     #memory_size = 80 * 1024 * 1024;
     static #decoder = new TextDecoder;
+    log;
 
-    constructor() {
-    }
+    constructor() { }
 
     async addFiles() {
         const content_array = await workspace.fs.readFile({ external: 'vscode-vfs://github/Jamtis/paper/input.tex', path: '/Jamtis/paper/input.tex', scheme: 'vscode-vfs', authority: 'github' });
@@ -51,9 +49,10 @@ export default class LatexCompiler {
     async compileToDataURI(main_file) {
         const engine = await this.#pdftex_engine;
         engine.setEngineMainFile(main_file);
-        const binary_pdf = await engine.compileLaTeX();
-        console.log(binary_pdf);
-        // return this.#pdf_tex.binaryToDataURI(binary_pdf);
+        const { log, pdf } = await engine.compileLaTeX();
+        this.log = log;
+        const string = pdf.reduce((data, byte) => data + String.fromCharCode(byte), '');
+        return 'data:application/pdf;base64,' + btoa(string);
     }
 };
 

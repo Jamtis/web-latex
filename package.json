@@ -9,10 +9,6 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "onCommand:latex-js.compile",
-    "onCommand:latex-js.listfiles"
-  ],
   "browser": "./dist/web/extension.js",
   "contributes": {
     "commands": [
