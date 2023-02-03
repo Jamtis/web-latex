@@ -1,0 +1,8 @@
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Expose-Headers "accept-ranges, content-encoding"
+    
+    <FilesMatch ".*\.wasm$">
+        Header set Content-Type "application/wasm"
+    </FilesMatch>
+</IfModule>
