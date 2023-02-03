@@ -22,8 +22,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const url_base = 'https://foc.ethz.ch/people/nicholasbrandt/web-latex/src/web/texlive.js/';
-
 class LatexCompiler {
     #pdftex_engine = (async () => {
         const engine = new PdfTeXEngine;
@@ -466,7 +464,6 @@ function activate(context) {
             const file_name = await vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInputBox() || 'input.tex';
 
             const compiler = new _LatexCompiler_js__WEBPACK_IMPORTED_MODULE_1__["default"];
-            await compiler.setMemorySize();
             await compiler.addFiles();
             const data_uri = await compiler.compileToDataURI(file_name);
             console.log(data_uri);

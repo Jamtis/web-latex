@@ -1,8 +1,6 @@
 import { workspace } from 'vscode';
 import './swiftlatex/PdfTeXEngine.js';
 
-const url_base = 'https://foc.ethz.ch/people/nicholasbrandt/web-latex/src/web/texlive.js/';
-
 export default class LatexCompiler {
     #pdftex_engine = (async () => {
         const engine = new PdfTeXEngine;
