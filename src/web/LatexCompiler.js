@@ -1,5 +1,5 @@
 import { workspace } from 'vscode';
-import './swiftlatex/PdfTeXEngine.js';
+require('./swiftlatex/PdfTeXEngine.js');
 
 export default class LatexCompiler {
     #pdftex_engine = (async () => {

@@ -17,10 +17,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vscode__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var vscode__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vscode__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _swiftlatex_PdfTeXEngine_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
-/* harmony import */ var _swiftlatex_PdfTeXEngine_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_swiftlatex_PdfTeXEngine_js__WEBPACK_IMPORTED_MODULE_1__);
 
-
+__webpack_require__(3);
 
 class LatexCompiler {
     #pdftex_engine = (async () => {
